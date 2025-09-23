@@ -1,20 +1,18 @@
-package org.firstinspires.ftc.teamcode.utils.positionMotorEx
+package org.firstinspires.ftc.teamcode.utils.positionMotor
 
 import Angle
 import AngularVelocity
 import Distance
-import LinearVelocity
 import com.qualcomm.robotcore.hardware.DcMotor
 import com.qualcomm.robotcore.hardware.DcMotorEx
 import com.qualcomm.robotcore.hardware.DcMotorSimple
-import com.qualcomm.robotcore.hardware.PIDFCoefficients
 import kotlin.math.abs
 
 
-class PositionMotorEx(
+class PositionMotor(
     private val motor: DcMotorEx,
-    override var config: MotorConfig
-) : IMotorEx {
+    override var config: PositionMotorConfig
+) : IPositionMotor {
 
     private var lastPower = 0.0
     private var gearRatio = 1.0
@@ -24,13 +22,13 @@ class PositionMotorEx(
     }
 
     override fun applyConfig() {
-        val coefficients = config.pidfCoefficients
+        val p = config.pCoefficient
         motor.zeroPowerBehavior = config.zeroPowerBehavior
         motor.direction = config.direction
-        motor.setVelocityPIDFCoefficients(coefficients.p, coefficients.i, coefficients.d, coefficients.f)
+        motor.setPositionPIDFCoefficients(p)
     }
 
-    override fun applyConfig(config: MotorConfig) {
+    override fun applyConfig(config: PositionMotorConfig) {
         this.config = config
         applyConfig()
     }
@@ -41,7 +39,6 @@ class PositionMotorEx(
 
     override fun setPCoefficient(p: Double) {
         motor.setPositionPIDFCoefficients(p)
-        motor.setPIDFCoefficients()
     }
 
     override fun setPower(power: Double) {
@@ -63,6 +60,16 @@ class PositionMotorEx(
 
     override fun setDirection(direction: DcMotorSimple.Direction) {
         motor.direction = direction
+    }
+
+    override fun setTolerance(tolerance: Angle) {
+        motor.targetPositionTolerance = (tolerance.rotations * config.ticksPerRevolution * gearRatio).toInt()
+    }
+
+    override fun setTolerance(tolerance: Distance, circumference: Distance) {
+        val rotations = tolerance.meters / circumference.meters
+
+        setTolerance(Angle.fromRotations(rotations))
     }
 
     override fun getPosition(): Angle {

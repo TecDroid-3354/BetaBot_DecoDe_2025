@@ -13,7 +13,7 @@ import kotlin.math.abs
 
 class VelocityMotorEx(
     private val motor: DcMotorEx,
-    override var config: VelocityMotorConfig
+    override var config: VelocityMotorExConfig
 ) : IVelocityMotorEx {
 
     private var lastPower = 0.0
@@ -32,7 +32,7 @@ class VelocityMotorEx(
         motor.setVelocityPIDFCoefficients(coefficients.p, coefficients.i, coefficients.d, coefficients.f)
     }
 
-    override fun applyConfig(config: VelocityMotorConfig) {
+    override fun applyConfig(config: VelocityMotorExConfig) {
         this.config = config
         applyConfig()
     }

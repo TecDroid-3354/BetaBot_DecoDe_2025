@@ -7,12 +7,11 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple
 import com.qualcomm.robotcore.hardware.HardwareMap
 import com.qualcomm.robotcore.hardware.PIDFCoefficients
 import com.seattlesolvers.solverslib.command.SubsystemBase
-import com.seattlesolvers.solverslib.controller.wpilibcontroller.SimpleMotorFeedforward
 import com.seattlesolvers.solverslib.geometry.Translation2d
 import com.seattlesolvers.solverslib.kinematics.wpilibkinematics.ChassisSpeeds
 import com.seattlesolvers.solverslib.kinematics.wpilibkinematics.MecanumDriveKinematics
 import org.firstinspires.ftc.robotcore.external.Telemetry
-import org.firstinspires.ftc.teamcode.utils.velocityMotorEx.VelocityMotorConfig
+import org.firstinspires.ftc.teamcode.utils.velocityMotorEx.VelocityMotorExConfig
 import org.firstinspires.ftc.teamcode.utils.velocityMotorEx.VelocityMotorEx
 import kotlin.math.abs
 import kotlin.math.sign
@@ -82,7 +81,7 @@ class Mecanum(val hw: HardwareMap, val telemetry: Telemetry) : SubsystemBase() {
     }
     fun motorsConfig() {
         frontRightMotor = VelocityMotorEx(hw.get(DcMotorEx::class.java, MecanumConstants.Ids.frId),
-            VelocityMotorConfig(
+            VelocityMotorExConfig(
                 DcMotor.ZeroPowerBehavior.FLOAT,
                 DcMotorSimple.Direction.REVERSE,
                 MecanumConstants.Physics.ticksPerRevolution,
@@ -90,7 +89,7 @@ class Mecanum(val hw: HardwareMap, val telemetry: Telemetry) : SubsystemBase() {
             ))
 
         frontLeftMotor = VelocityMotorEx(hw.get(DcMotorEx::class.java, MecanumConstants.Ids.flId),
-            VelocityMotorConfig(
+            VelocityMotorExConfig(
                 DcMotor.ZeroPowerBehavior.FLOAT,
                 DcMotorSimple.Direction.REVERSE,
                 MecanumConstants.Physics.ticksPerRevolution,
@@ -98,7 +97,7 @@ class Mecanum(val hw: HardwareMap, val telemetry: Telemetry) : SubsystemBase() {
             ))
 
         backRightMotor = VelocityMotorEx(hw.get(DcMotorEx::class.java, MecanumConstants.Ids.brId),
-            VelocityMotorConfig(
+            VelocityMotorExConfig(
                 DcMotor.ZeroPowerBehavior.FLOAT,
                 DcMotorSimple.Direction.FORWARD,
                 MecanumConstants.Physics.ticksPerRevolution,
@@ -106,7 +105,7 @@ class Mecanum(val hw: HardwareMap, val telemetry: Telemetry) : SubsystemBase() {
             ))
 
         backLeftMotor = VelocityMotorEx(hw.get(DcMotorEx::class.java, MecanumConstants.Ids.blId),
-            VelocityMotorConfig(
+            VelocityMotorExConfig(
                 DcMotor.ZeroPowerBehavior.FLOAT,
                 DcMotorSimple.Direction.REVERSE,
                 MecanumConstants.Physics.ticksPerRevolution,

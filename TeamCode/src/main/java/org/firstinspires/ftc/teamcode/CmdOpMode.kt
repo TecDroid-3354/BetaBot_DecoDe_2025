@@ -2,16 +2,28 @@ package org.firstinspires.ftc.teamcode
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 import com.seattlesolvers.solverslib.command.CommandOpMode
+import com.seattlesolvers.solverslib.gamepad.GamepadEx
 import com.seattlesolvers.solverslib.kinematics.wpilibkinematics.ChassisSpeeds
+import org.firstinspires.ftc.teamcode.commands.JoystickCmd
+import org.firstinspires.ftc.teamcode.subsystems.drivetrain.FeedforwardMecanum
 import org.firstinspires.ftc.teamcode.subsystems.drivetrain.Mecanum
 import kotlin.math.PI
 import kotlin.math.pow
 
 @TeleOp(name = "CMD", group = "Op Mode")
 class CMDOpMode : CommandOpMode() {
-    lateinit var mecanum: Mecanum
+    //lateinit var mecanum: Mecanum
+    lateinit var mecanum: FeedforwardMecanum
     override fun initialize() {
-        mecanum = Mecanum(hardwareMap, telemetry)
+        //mecanum = Mecanum(hardwareMap, telemetry)
+        /*mecanum.defaultCommand = JoystickCmd(
+            { (-gamepad1.left_stick_x).toDouble() },
+            { (-gamepad1.left_stick_y).toDouble() },
+            { (-gamepad1.right_stick_x).toDouble() },
+                mecanum
+        )*/
+
+        mecanum = FeedforwardMecanum(hardwareMap, telemetry)
 
         configureButtonBindings()
 
@@ -22,11 +34,7 @@ class CMDOpMode : CommandOpMode() {
     }
 
     fun periodic() {
-        val speeds = ChassisSpeeds( -gamepad1.left_stick_y.toDouble().pow(3.0) * 1.5,
-            -gamepad1.left_stick_x.toDouble().pow(3.0) * 2.0,
-            -gamepad1.right_stick_x.toDouble().pow(3.0) * 20.0)
-        mecanum.setChassisSpeeds(speeds)
-
+        mecanum.caracterization(gamepad1)
         telemetry.addData("frontRight", mecanum.frontRightMotor.getLinearVelocity().mps)
         telemetry.addData("frontLeft", mecanum.frontLeftMotor.getLinearVelocity().mps)
         telemetry.addData("backRight", mecanum.backRightMotor.getLinearVelocity().mps)

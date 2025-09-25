@@ -4,30 +4,32 @@ import LinearVelocity
 import com.qualcomm.robotcore.hardware.DcMotor
 import com.qualcomm.robotcore.hardware.DcMotorEx
 import com.qualcomm.robotcore.hardware.DcMotorSimple
+import com.qualcomm.robotcore.hardware.Gamepad
 import com.qualcomm.robotcore.hardware.HardwareMap
-import com.qualcomm.robotcore.hardware.PIDFCoefficients
 import com.seattlesolvers.solverslib.command.SubsystemBase
+import com.seattlesolvers.solverslib.gamepad.ButtonReader
 import com.seattlesolvers.solverslib.geometry.Translation2d
 import com.seattlesolvers.solverslib.kinematics.wpilibkinematics.ChassisSpeeds
 import com.seattlesolvers.solverslib.kinematics.wpilibkinematics.MecanumDriveKinematics
 import org.firstinspires.ftc.robotcore.external.Telemetry
-import org.firstinspires.ftc.teamcode.utils.velocityMotorEx.VelocityMotorExConfig
-import org.firstinspires.ftc.teamcode.utils.velocityMotorEx.VelocityMotorEx
+import org.firstinspires.ftc.teamcode.utils.velocityMotor.SVACoefficients
+import org.firstinspires.ftc.teamcode.utils.velocityMotor.VelocityMotor
+import org.firstinspires.ftc.teamcode.utils.velocityMotor.VelocityMotorConfig
 import kotlin.math.abs
 import kotlin.math.sign
 
 
-class Mecanum(val hw: HardwareMap, val telemetry: Telemetry) : SubsystemBase() {
+class FeedforwardMecanum(val hw: HardwareMap, val telemetry: Telemetry) : SubsystemBase() {
 
-    lateinit var frontRightMotor: VelocityMotorEx
-    lateinit var frontLeftMotor: VelocityMotorEx
-    lateinit var backRightMotor: VelocityMotorEx
-    lateinit var backLeftMotor: VelocityMotorEx
+    lateinit var frontRightMotor: VelocityMotor
+    lateinit var frontLeftMotor: VelocityMotor
+    lateinit var backRightMotor: VelocityMotor
+    lateinit var backLeftMotor: VelocityMotor
 
-    private val frPIDFCoefficients = PIDFCoefficients(2.0, 0.0, 0.0, 15.5)
-    private val flPIDFCoefficients = PIDFCoefficients(2.0, 0.0, 0.0, 16.0)
-    private val brPIDFCoefficients = PIDFCoefficients(3.0, 0.0, 0.0, 18.5)
-    private val blPIDFCoefficients = PIDFCoefficients(2.0, 0.0, 0.0, 17.5)
+    private val frPIDFCoefficients = SVACoefficients(0.0, 0.0, 0.0)
+    private val flPIDFCoefficients = SVACoefficients(0.0, 0.0, 0.0)
+    private val brPIDFCoefficients = SVACoefficients(0.0, 0.0, 0.0)
+    private val blPIDFCoefficients = SVACoefficients(0.0, 0.0, 0.0)
 
 
 
@@ -49,9 +51,46 @@ class Mecanum(val hw: HardwareMap, val telemetry: Telemetry) : SubsystemBase() {
 
     var maxDelta = 0.05
 
+    var frPower = 0.0
+    var flPower = 0.0
+    var brPower = 0.0
+    var blPower = 0.0
+
+
     init {
         motorsConfig()
 
+    }
+
+    fun caracterization(gamepad: Gamepad) {
+        if (gamepad.y) {
+            frPower += 0.1
+        }
+        if (gamepad.b) {
+            flPower += 0.1
+        }
+        if (gamepad.x) {
+            brPower += 0.1
+        }
+        if (gamepad.a) {
+            blPower += 0.1
+        }
+        if (gamepad.start) {
+            frPower += 0.1
+            flPower += 0.1
+            brPower += 0.1
+            blPower += 0.1
+        }
+
+        frontRightMotor.setPower(frPower)
+        frontLeftMotor.setPower(flPower)
+        backRightMotor.setPower(brPower)
+        backLeftMotor.setPower(blPower)
+
+        telemetry.addData("fr", frPower)
+        telemetry.addData("fl", flPower)
+        telemetry.addData("br", brPower)
+        telemetry.addData("bl", blPower)
     }
 
     fun setChassisSpeeds(chassisSpeeds: ChassisSpeeds) {
@@ -80,32 +119,32 @@ class Mecanum(val hw: HardwareMap, val telemetry: Telemetry) : SubsystemBase() {
         return target
     }
     fun motorsConfig() {
-        frontRightMotor = VelocityMotorEx(hw.get(DcMotorEx::class.java, MecanumConstants.Ids.frId),
-            VelocityMotorExConfig(
+        frontRightMotor = VelocityMotor(hw.get(DcMotorEx::class.java, MecanumConstants.Ids.frId),
+            VelocityMotorConfig(
                 DcMotor.ZeroPowerBehavior.FLOAT,
                 DcMotorSimple.Direction.REVERSE,
                 MecanumConstants.Physics.ticksPerRevolution,
                 frPIDFCoefficients
             ))
 
-        frontLeftMotor = VelocityMotorEx(hw.get(DcMotorEx::class.java, MecanumConstants.Ids.flId),
-            VelocityMotorExConfig(
+        frontLeftMotor = VelocityMotor(hw.get(DcMotorEx::class.java, MecanumConstants.Ids.flId),
+            VelocityMotorConfig(
                 DcMotor.ZeroPowerBehavior.FLOAT,
                 DcMotorSimple.Direction.REVERSE,
                 MecanumConstants.Physics.ticksPerRevolution,
                 flPIDFCoefficients
             ))
 
-        backRightMotor = VelocityMotorEx(hw.get(DcMotorEx::class.java, MecanumConstants.Ids.brId),
-            VelocityMotorExConfig(
+        backRightMotor = VelocityMotor(hw.get(DcMotorEx::class.java, MecanumConstants.Ids.brId),
+            VelocityMotorConfig(
                 DcMotor.ZeroPowerBehavior.FLOAT,
                 DcMotorSimple.Direction.FORWARD,
                 MecanumConstants.Physics.ticksPerRevolution,
                 brPIDFCoefficients
             ))
 
-        backLeftMotor = VelocityMotorEx(hw.get(DcMotorEx::class.java, MecanumConstants.Ids.blId),
-            VelocityMotorExConfig(
+        backLeftMotor = VelocityMotor(hw.get(DcMotorEx::class.java, MecanumConstants.Ids.blId),
+            VelocityMotorConfig(
                 DcMotor.ZeroPowerBehavior.FLOAT,
                 DcMotorSimple.Direction.REVERSE,
                 MecanumConstants.Physics.ticksPerRevolution,

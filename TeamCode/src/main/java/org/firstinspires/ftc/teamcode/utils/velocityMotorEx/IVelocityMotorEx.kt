@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.hardware.DcMotor
 import com.qualcomm.robotcore.hardware.DcMotorSimple
 import com.qualcomm.robotcore.hardware.PIDFCoefficients
 
-data class VelocityMotorConfig(
+data class VelocityMotorExConfig(
     val zeroPowerBehavior: DcMotor.ZeroPowerBehavior = DcMotor.ZeroPowerBehavior.FLOAT,
     val direction: DcMotorSimple.Direction = DcMotorSimple.Direction.FORWARD,
     val ticksPerRevolution: Double = 1.0,
@@ -17,7 +17,7 @@ data class VelocityMotorConfig(
 )
 
 interface IVelocityMotorEx {
-    var config: VelocityMotorConfig
+    var config: VelocityMotorExConfig
 
     fun setPower(power: Double)
     fun setVelocity(angularVelocity: AngularVelocity)
@@ -31,7 +31,7 @@ interface IVelocityMotorEx {
     fun getLinearVelocity(): LinearVelocity
     fun getLinearVelocity(circumference: Distance): LinearVelocity
     fun applyConfig()
-    fun applyConfig(config: VelocityMotorConfig)
+    fun applyConfig(config: VelocityMotorExConfig)
 
     fun setGearRatio(gearRatio: Double)
 

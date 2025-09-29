@@ -40,6 +40,4 @@ interface IVelocityMotor {
     fun applyConfig(config: VelocityMotorConfig)
 
     fun setGearRatio(gearRatio: Double)
-
-    fun setSVACoefficients(svaCoefficients: SVACoefficients)
 }

@@ -7,11 +7,11 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple
 import com.qualcomm.robotcore.hardware.Gamepad
 import com.qualcomm.robotcore.hardware.HardwareMap
 import com.seattlesolvers.solverslib.command.SubsystemBase
-import com.seattlesolvers.solverslib.gamepad.ButtonReader
 import com.seattlesolvers.solverslib.geometry.Translation2d
 import com.seattlesolvers.solverslib.kinematics.wpilibkinematics.ChassisSpeeds
 import com.seattlesolvers.solverslib.kinematics.wpilibkinematics.MecanumDriveKinematics
 import org.firstinspires.ftc.robotcore.external.Telemetry
+import org.firstinspires.ftc.teamcode.utils.ToggleButton
 import org.firstinspires.ftc.teamcode.utils.velocityMotor.SVACoefficients
 import org.firstinspires.ftc.teamcode.utils.velocityMotor.VelocityMotor
 import org.firstinspires.ftc.teamcode.utils.velocityMotor.VelocityMotorConfig
@@ -19,17 +19,17 @@ import kotlin.math.abs
 import kotlin.math.sign
 
 
-class FeedforwardMecanum(val hw: HardwareMap, val telemetry: Telemetry) : SubsystemBase() {
+class FeedforwardMecanum(val hw: HardwareMap, val telemetry: Telemetry, val gamepad: Gamepad) : SubsystemBase() {
 
     lateinit var frontRightMotor: VelocityMotor
     lateinit var frontLeftMotor: VelocityMotor
     lateinit var backRightMotor: VelocityMotor
     lateinit var backLeftMotor: VelocityMotor
 
-    private val frPIDFCoefficients = SVACoefficients(0.0, 0.0, 0.0)
-    private val flPIDFCoefficients = SVACoefficients(0.0, 0.0, 0.0)
-    private val brPIDFCoefficients = SVACoefficients(0.0, 0.0, 0.0)
-    private val blPIDFCoefficients = SVACoefficients(0.0, 0.0, 0.0)
+    private val frPIDFCoefficients = SVACoefficients(0.05, 0.2, 0.0)
+    private val flPIDFCoefficients = SVACoefficients(0.075, 0.2, 0.0)
+    private val brPIDFCoefficients = SVACoefficients(0.075, 0.2, 0.0)
+    private val blPIDFCoefficients = SVACoefficients(0.05, 0.2, 0.0)
 
 
 
@@ -56,30 +56,45 @@ class FeedforwardMecanum(val hw: HardwareMap, val telemetry: Telemetry) : Subsys
     var brPower = 0.0
     var blPower = 0.0
 
+    val yToggleButton = ToggleButton { gamepad.y }
+    val bToggleButton = ToggleButton { gamepad.b }
+    val xToggleButton = ToggleButton { gamepad.x }
+    val aToggleButton = ToggleButton { gamepad.a }
+    val startToggleButton = ToggleButton { gamepad.start }
+
 
     init {
         motorsConfig()
 
     }
 
-    fun caracterization(gamepad: Gamepad) {
-        if (gamepad.y) {
-            frPower += 0.1
+    fun setMotorsVelocity(velocity: LinearVelocity) {
+        frontRightMotor.setVelocity(velocity)
+        frontLeftMotor.setVelocity(velocity)
+        backRightMotor.setVelocity(velocity)
+        backLeftMotor.setVelocity(velocity)
+    }
+
+    fun identification() {
+        val powerConstant = 0.025
+
+        if (yToggleButton.wasJustPressed()) {
+            frPower += powerConstant
         }
-        if (gamepad.b) {
-            flPower += 0.1
+        if (bToggleButton.wasJustPressed()) {
+            flPower += powerConstant
         }
-        if (gamepad.x) {
-            brPower += 0.1
+        if (xToggleButton.wasJustPressed()) {
+            brPower += powerConstant
         }
-        if (gamepad.a) {
-            blPower += 0.1
+        if (aToggleButton.wasJustPressed()) {
+            blPower += powerConstant
         }
-        if (gamepad.start) {
-            frPower += 0.1
-            flPower += 0.1
-            brPower += 0.1
-            blPower += 0.1
+        if (startToggleButton.wasJustPressed()) {
+            frPower += powerConstant
+            flPower += powerConstant
+            brPower += powerConstant
+            blPower += powerConstant
         }
 
         frontRightMotor.setPower(frPower)
@@ -96,18 +111,28 @@ class FeedforwardMecanum(val hw: HardwareMap, val telemetry: Telemetry) : Subsys
     fun setChassisSpeeds(chassisSpeeds: ChassisSpeeds) {
         val wheelSpeeds = kinematics.toWheelSpeeds(chassisSpeeds)
 
-        val flVel = smoothVel(prevVelLeft, wheelSpeeds.frontLeftMetersPerSecond);
-        val blVel = smoothVel(prevVelLeft, wheelSpeeds.rearLeftMetersPerSecond);
-        val frVel = smoothVel(prevVelRight, wheelSpeeds.frontRightMetersPerSecond);
-        val brVel = smoothVel(prevVelRight, wheelSpeeds.rearRightMetersPerSecond);
+        val flVel = smoothVel(prevVelLeft, wheelSpeeds.frontLeftMetersPerSecond)
+        val blVel = smoothVel(prevVelLeft, wheelSpeeds.rearLeftMetersPerSecond)
+        val frVel = smoothVel(prevVelRight, wheelSpeeds.frontRightMetersPerSecond)
+        val brVel = smoothVel(prevVelRight, wheelSpeeds.rearRightMetersPerSecond)
 
-        prevVelLeft  = (flVel + blVel) / 2.0;
-        prevVelRight  = (frVel + brVel) / 2.0;
+        /*val flVel = wheelSpeeds.frontLeftMetersPerSecond
+        val blVel = wheelSpeeds.rearLeftMetersPerSecond
+        val frVel = wheelSpeeds.frontRightMetersPerSecond
+        val brVel = wheelSpeeds.rearRightMetersPerSecond*/
+
+        prevVelLeft  = (flVel + blVel) / 2.0
+        prevVelRight  = (frVel + brVel) / 2.0
 
         frontRightMotor.setVelocity(LinearVelocity.fromMps(frVel))
         frontLeftMotor.setVelocity(LinearVelocity.fromMps(flVel))
         backRightMotor.setVelocity(LinearVelocity.fromMps(brVel))
         backLeftMotor.setVelocity(LinearVelocity.fromMps(blVel))
+
+        telemetry.addData("frSpeed", frVel)
+        telemetry.addData("flSpeed", flVel)
+        telemetry.addData("brSpeed", brVel)
+        telemetry.addData("blSpeed", blVel)
     }
 
     // Función para limitar la aceleración

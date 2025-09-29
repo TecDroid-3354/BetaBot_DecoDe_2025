@@ -18,7 +18,8 @@ class MecanumConstants {
     }
 
     object Velocities {
-        val maxVelocity: LinearVelocity = LinearVelocity.fromMps(1.5)
+        val maxVelocityY: LinearVelocity = LinearVelocity.fromMps(1.5)
+        val maxVelocityX: LinearVelocity = LinearVelocity.fromMps(13.0)
         val maxRotationVelocity: AngularVelocity = AngularVelocity.fromDegPerSec(30.0)
 
     }

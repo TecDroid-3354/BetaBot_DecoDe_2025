@@ -22,7 +22,8 @@ class VelocityMotor(
 
     private var wheelCircumference = Distance.fromCm(7.5)
 
-    private val feedforward: SimpleMotorFeedforward = SimpleMotorFeedforward(config.svaCoefficients.kS, config.svaCoefficients.kV, config.svaCoefficients.kA)
+    private var feedforward: SimpleMotorFeedforward =
+        SimpleMotorFeedforward(config.svaCoefficients.kS, config.svaCoefficients.kV, config.svaCoefficients.kA)
 
     init {
         applyConfig()
@@ -32,7 +33,6 @@ class VelocityMotor(
         val coefficients = config.svaCoefficients
         motor.zeroPowerBehavior = config.zeroPowerBehavior
         motor.direction = config.direction
-        setSVACoefficients(config.svaCoefficients)
     }
 
     override fun applyConfig(config: VelocityMotorConfig) {
@@ -42,12 +42,6 @@ class VelocityMotor(
 
     override fun setGearRatio(gearRatio: Double) {
         this.gearRatio = gearRatio
-    }
-
-    override fun setSVACoefficients(svaCoefficients: SVACoefficients) {
-        feedforward.ks = svaCoefficients.kS
-        feedforward.kv = svaCoefficients.kV
-        feedforward.ka = svaCoefficients.kA
     }
 
     override fun setPower(power: Double) {

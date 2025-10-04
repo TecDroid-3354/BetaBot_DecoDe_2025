@@ -21,7 +21,7 @@ public class ColorCalibrationJSON extends LinearOpMode {
 
         telemetry.addLine("Coloca el sensor frente al color y presiona:");
         telemetry.addLine("A=RED | B=BLUE | X=YELLOW | Y=WHITE");
-        telemetry.addLine("Izq=ORANGE | Der=PURPLE | Abajo=BLACK");
+        telemetry.addLine("Izq=ORANGE | Der=PURPLE | Arriba=UNKNOWN | Abajo=BLACK");
         telemetry.update();
 
         waitForStart();
@@ -34,6 +34,7 @@ public class ColorCalibrationJSON extends LinearOpMode {
 
             if (gamepad1.dpad_left) guardarColor(DetectedColor.ORANGE);
             if (gamepad1.dpad_right) guardarColor(DetectedColor.PURPLE);
+            if (gamepad1.dpad_up) guardarColor(DetectedColor.UNKNOWN);
             if (gamepad1.dpad_down) guardarColor(DetectedColor.BLACK);
         }
     }

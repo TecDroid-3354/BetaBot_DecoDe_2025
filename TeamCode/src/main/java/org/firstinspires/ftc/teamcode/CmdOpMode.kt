@@ -2,10 +2,9 @@ package org.firstinspires.ftc.teamcode
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 import com.qualcomm.robotcore.hardware.ColorSensor
-import com.qualcomm.robotcore.hardware.NormalizedColorSensor
 import com.seattlesolvers.solverslib.command.CommandOpMode
 import com.seattlesolvers.solverslib.kinematics.wpilibkinematics.ChassisSpeeds
-import org.firstinspires.ftc.teamcode.sensor.ColorSensorEx
+import org.firstinspires.ftc.teamcode.utils.colorSensor.ColorSensorEx
 import org.firstinspires.ftc.teamcode.subsystems.drivetrain.Mecanum
 import kotlin.math.pow
 

@@ -1,8 +1,6 @@
-package org.firstinspires.ftc.teamcode.sensor;
+package org.firstinspires.ftc.teamcode.utils.colorSensor;
 
 import com.qualcomm.robotcore.hardware.ColorSensor;
-import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
-import com.qualcomm.robotcore.hardware.NormalizedRGBA;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.utils.ReadFile;

@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.sensor;
+package org.firstinspires.ftc.teamcode.utils.colorSensor;
 
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -11,7 +11,7 @@ import org.json.JSONObject;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
-import org.firstinspires.ftc.teamcode.sensor.ColorSensorEx.DetectedColor;
+import org.firstinspires.ftc.teamcode.utils.colorSensor.ColorSensorEx.DetectedColor;
 @Disabled
 @TeleOp(name = "ColorSensor-Test", group = "Op Mode")
 

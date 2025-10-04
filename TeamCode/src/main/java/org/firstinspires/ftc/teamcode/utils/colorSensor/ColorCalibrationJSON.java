@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.sensor;
+package org.firstinspires.ftc.teamcode.utils.colorSensor;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -8,7 +8,7 @@ import org.firstinspires.ftc.teamcode.utils.ReadFile;
 import org.json.JSONObject;
 import java.io.File;
 import java.io.FileWriter;
-import org.firstinspires.ftc.teamcode.sensor.ColorSensorEx.DetectedColor;
+import org.firstinspires.ftc.teamcode.utils.colorSensor.ColorSensorEx.DetectedColor;
 
 @TeleOp(name = "ColorSensor-calibration", group = "Op Mode")
 public class ColorCalibrationJSON extends LinearOpMode {

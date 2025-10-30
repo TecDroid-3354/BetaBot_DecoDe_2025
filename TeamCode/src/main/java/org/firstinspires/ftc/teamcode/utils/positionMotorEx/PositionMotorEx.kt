@@ -16,7 +16,7 @@ class PositionMotorEx(
     override var config: PositionMotorExConfig
 ) : IPositionMotorEx {
 
-    private lateinit var pidfController: PIDFController
+    private var pidfController: PIDFController = PIDFController(config.pidfCoefficients)
     private var lastPower = 0.0
     private var gearRatio = 1.0
 
@@ -27,7 +27,7 @@ class PositionMotorEx(
     override fun applyConfig() {
         motor.zeroPowerBehavior = config.zeroPowerBehavior
         motor.direction = config.direction
-        pidfController = PIDFController(config.pidfCoefficients)
+        setPIDFCoefficients(config.pidfCoefficients)
     }
 
     override fun applyConfig(config: PositionMotorExConfig) {

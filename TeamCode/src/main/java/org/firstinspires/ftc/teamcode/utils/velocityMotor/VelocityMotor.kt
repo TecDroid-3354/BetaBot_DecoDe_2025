@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.utils.velocityMotorEx
+package org.firstinspires.ftc.teamcode.utils.velocityMotor
 
 import Angle
 import AngularVelocity
@@ -8,41 +8,40 @@ import com.qualcomm.robotcore.hardware.DcMotor
 import com.qualcomm.robotcore.hardware.DcMotorEx
 import com.qualcomm.robotcore.hardware.DcMotorSimple
 import com.qualcomm.robotcore.hardware.PIDFCoefficients
+import com.seattlesolvers.solverslib.controller.wpilibcontroller.SimpleMotorFeedforward
 import kotlin.math.abs
 
 
-class VelocityMotorEx(
+class VelocityMotor(
     private val motor: DcMotorEx,
-    override var config: VelocityMotorExConfig
-) : IVelocityMotorEx {
+    override var config: VelocityMotorConfig
+) : IVelocityMotor {
 
     private var lastPower = 0.0
     private var gearRatio = 1.0
 
     private var wheelCircumference = Distance.fromCm(7.5)
 
+    private var feedforward: SimpleMotorFeedforward =
+        SimpleMotorFeedforward(config.svaCoefficients.kS, config.svaCoefficients.kV, config.svaCoefficients.kA)
+
     init {
         applyConfig()
     }
 
     override fun applyConfig() {
-        val coefficients = config.pidfCoefficients
+        val coefficients = config.svaCoefficients
         motor.zeroPowerBehavior = config.zeroPowerBehavior
         motor.direction = config.direction
-        motor.setVelocityPIDFCoefficients(coefficients.p, coefficients.i, coefficients.d, coefficients.f)
     }
 
-    override fun applyConfig(config: VelocityMotorExConfig) {
+    override fun applyConfig(config: VelocityMotorConfig) {
         this.config = config
         applyConfig()
     }
 
     override fun setGearRatio(gearRatio: Double) {
         this.gearRatio = gearRatio
-    }
-
-    override fun setPIDFCoefficients(pidfCoefficients: PIDFCoefficients) {
-        motor.setVelocityPIDFCoefficients(pidfCoefficients.p, pidfCoefficients.i, pidfCoefficients.d, pidfCoefficients.f)
     }
 
     override fun setPower(power: Double) {
@@ -53,7 +52,7 @@ class VelocityMotorEx(
     }
 
     override fun setVelocity(angularVelocity: AngularVelocity) {
-        motor.velocity = angularVelocity.rps * config.ticksPerRevolution * gearRatio
+        setPower(feedforward.calculate(angularVelocity.rps))
     }
 
     override fun setVelocity(linearVelocity: LinearVelocity) {

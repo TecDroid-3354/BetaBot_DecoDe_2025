@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.utils.velocityMotorEx
+package org.firstinspires.ftc.teamcode.utils.velocityMotor
 
 import Angle
 import AngularVelocity
@@ -8,16 +8,22 @@ import com.qualcomm.robotcore.hardware.DcMotor
 import com.qualcomm.robotcore.hardware.DcMotorSimple
 import com.qualcomm.robotcore.hardware.PIDFCoefficients
 
-data class VelocityMotorExConfig(
+data class SVACoefficients(
+    val kS: Double,
+    val kV: Double,
+    val kA: Double
+)
+
+data class VelocityMotorConfig(
     val zeroPowerBehavior: DcMotor.ZeroPowerBehavior = DcMotor.ZeroPowerBehavior.FLOAT,
     val direction: DcMotorSimple.Direction = DcMotorSimple.Direction.FORWARD,
     val ticksPerRevolution: Double = 1.0,
-    val pidfCoefficients: PIDFCoefficients = PIDFCoefficients(1.0, 0.0, 0.0, 0.0),
+    val svaCoefficients: SVACoefficients = SVACoefficients(0.2, 0.5, 0.0),
     val powerThreshold: Double = 0.01
 )
 
-interface IVelocityMotorEx {
-    var config: VelocityMotorExConfig
+interface IVelocityMotor {
+    var config: VelocityMotorConfig
 
     fun setPower(power: Double)
     fun setVelocity(angularVelocity: AngularVelocity)
@@ -31,9 +37,7 @@ interface IVelocityMotorEx {
     fun getLinearVelocity(): LinearVelocity
     fun getLinearVelocity(circumference: Distance): LinearVelocity
     fun applyConfig()
-    fun applyConfig(config: VelocityMotorExConfig)
+    fun applyConfig(config: VelocityMotorConfig)
 
     fun setGearRatio(gearRatio: Double)
-
-    fun setPIDFCoefficients(pidfCoefficients: PIDFCoefficients)
 }

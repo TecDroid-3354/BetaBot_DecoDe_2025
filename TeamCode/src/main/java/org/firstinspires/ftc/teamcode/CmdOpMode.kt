@@ -1,20 +1,27 @@
 package org.firstinspires.ftc.teamcode
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
-import com.qualcomm.robotcore.hardware.ColorSensor
 import com.seattlesolvers.solverslib.command.CommandOpMode
-import com.seattlesolvers.solverslib.kinematics.wpilibkinematics.ChassisSpeeds
-import org.firstinspires.ftc.teamcode.utils.colorSensor.ColorSensorEx
-import org.firstinspires.ftc.teamcode.subsystems.drivetrain.Mecanum
-import kotlin.math.pow
+import com.seattlesolvers.solverslib.gamepad.GamepadEx
+import org.firstinspires.ftc.teamcode.commands.JoystickCmd
+import org.firstinspires.ftc.teamcode.subsystems.drivetrain.FeedforwardMecanum
 
 @TeleOp(name = "CMD", group = "Op Mode")
 class CMDOpMode : CommandOpMode() {
-    lateinit var mecanum: Mecanum
-    lateinit var colorSensorEx: ColorSensorEx
+    //lateinit var mecanum: Mecanum
+    lateinit var mecanum: FeedforwardMecanum
+    lateinit var gamepadEx: GamepadEx
     override fun initialize() {
-        mecanum = Mecanum(hardwareMap, telemetry)
-        colorSensorEx = ColorSensorEx(hardwareMap.get(ColorSensor::class.java, "colorSensor"), telemetry)
+        //mecanum = Mecanum(hardwareMap, telemetry)
+        mecanum = FeedforwardMecanum(hardwareMap, telemetry, gamepad1)
+        mecanum.defaultCommand = JoystickCmd(
+            { (-gamepad1.left_stick_x).toDouble() },
+            { (-gamepad1.left_stick_y).toDouble() },
+            { (-gamepad1.right_stick_x).toDouble() },
+                mecanum
+        )
+
+        gamepadEx = GamepadEx(gamepad1)
 
         configureButtonBindings()
 
@@ -25,13 +32,10 @@ class CMDOpMode : CommandOpMode() {
     }
 
     fun periodic() {
-
-        val speeds = ChassisSpeeds( -gamepad1.left_stick_y.toDouble().pow(3.0) * 1.5,
-            -gamepad1.left_stick_x.toDouble().pow(3.0) * 2.0,
-            -gamepad1.right_stick_x.toDouble().pow(3.0) * 20.0)
-        mecanum.setChassisSpeeds(speeds)
-
-        telemetry.addData("Detected Color", colorSensorEx.colorFromSensor)
+        telemetry.addData("frontRight", mecanum.frontRightMotor.getLinearVelocity().mps)
+        telemetry.addData("frontLeft", mecanum.frontLeftMotor.getLinearVelocity().mps)
+        telemetry.addData("backRight", mecanum.backRightMotor.getLinearVelocity().mps)
+        telemetry.addData("backLeft", mecanum.backLeftMotor.getLinearVelocity().mps)
 
         telemetry.update()
     }

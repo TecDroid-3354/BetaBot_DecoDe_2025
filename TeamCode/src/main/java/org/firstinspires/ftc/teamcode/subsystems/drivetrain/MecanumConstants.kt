@@ -13,13 +13,13 @@ class MecanumConstants {
     }
 
     object Physics {
-        const val ticksPerRevolution: Double = 290.0
+        const val ticksPerRevolution: Double = 2150.4
         val circumference = Distance.fromCm(7.5 * PI)
     }
 
     object Velocities {
         val maxVelocityY: LinearVelocity = LinearVelocity.fromMps(1.5)
-        val maxVelocityX: LinearVelocity = LinearVelocity.fromMps(13.0)
+        val maxVelocityX: LinearVelocity = LinearVelocity.fromMps(1.5)
         val maxRotationVelocity: AngularVelocity = AngularVelocity.fromDegPerSec(30.0)
 
     }

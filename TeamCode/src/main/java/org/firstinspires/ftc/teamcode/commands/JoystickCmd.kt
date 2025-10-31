@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode.commands
 import com.seattlesolvers.solverslib.command.CommandBase
 import com.seattlesolvers.solverslib.kinematics.wpilibkinematics.ChassisSpeeds
 import com.seattlesolvers.solverslib.util.MathUtils.clamp
-import org.firstinspires.ftc.teamcode.subsystems.drivetrain.FeedforwardMecanum
+import org.firstinspires.ftc.teamcode.subsystems.drivetrain.Mecanum
 import org.firstinspires.ftc.teamcode.subsystems.drivetrain.MecanumConstants
 import java.util.function.DoubleSupplier
 import kotlin.math.pow
@@ -22,7 +22,7 @@ class JoystickCmd(
     val x: DoubleSupplier,
     val y: DoubleSupplier,
     val rx: DoubleSupplier,
-    val mecanum: FeedforwardMecanum
+    val mecanum: Mecanum
 ) : CommandBase() {
 
     init {

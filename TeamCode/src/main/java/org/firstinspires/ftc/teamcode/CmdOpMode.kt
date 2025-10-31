@@ -4,16 +4,16 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 import com.seattlesolvers.solverslib.command.CommandOpMode
 import com.seattlesolvers.solverslib.gamepad.GamepadEx
 import org.firstinspires.ftc.teamcode.commands.JoystickCmd
-import org.firstinspires.ftc.teamcode.subsystems.drivetrain.FeedforwardMecanum
+import org.firstinspires.ftc.teamcode.subsystems.drivetrain.Mecanum
 
 @TeleOp(name = "CMD", group = "Op Mode")
 class CMDOpMode : CommandOpMode() {
     //lateinit var mecanum: Mecanum
-    lateinit var mecanum: FeedforwardMecanum
+    lateinit var mecanum: Mecanum
     lateinit var gamepadEx: GamepadEx
     override fun initialize() {
         //mecanum = Mecanum(hardwareMap, telemetry)
-        mecanum = FeedforwardMecanum(hardwareMap, telemetry, gamepad1)
+        mecanum = Mecanum(hardwareMap, telemetry)
         mecanum.defaultCommand = JoystickCmd(
             { (-gamepad1.left_stick_x).toDouble() },
             { (-gamepad1.left_stick_y).toDouble() },

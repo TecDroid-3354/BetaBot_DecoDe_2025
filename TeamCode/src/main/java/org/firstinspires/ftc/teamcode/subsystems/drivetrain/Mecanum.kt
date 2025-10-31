@@ -24,10 +24,10 @@ class Mecanum(val hw: HardwareMap, val telemetry: Telemetry) : SubsystemBase() {
     lateinit var backRightMotor: VelocityMotorEx
     lateinit var backLeftMotor: VelocityMotorEx
 
-    private val frPIDFCoefficients = PIDFCoefficients(2.0, 0.0, 0.0, 15.5)
-    private val flPIDFCoefficients = PIDFCoefficients(2.0, 0.0, 0.0, 16.0)
-    private val brPIDFCoefficients = PIDFCoefficients(3.0, 0.0, 0.0, 18.5)
-    private val blPIDFCoefficients = PIDFCoefficients(2.0, 0.0, 0.0, 17.5)
+    private val frPIDFCoefficients = PIDFCoefficients(2.0, 0.0, 0.0, 15.0)
+    private val flPIDFCoefficients = PIDFCoefficients(2.0, 0.0, 0.0, 15.0)
+    private val brPIDFCoefficients = PIDFCoefficients(2.0, 0.0, 0.0, 15.0)
+    private val blPIDFCoefficients = PIDFCoefficients(2.0, 0.0, 0.0, 15.0)
 
 
 
@@ -54,7 +54,7 @@ class Mecanum(val hw: HardwareMap, val telemetry: Telemetry) : SubsystemBase() {
 
     }
 
-    fun setChassisSpeeds(chassisSpeeds: ChassisSpeeds) {
+    /*fun setChassisSpeeds(chassisSpeeds: ChassisSpeeds) {
         val wheelSpeeds = kinematics.toWheelSpeeds(chassisSpeeds)
 
         val flVel = smoothVel(prevVelLeft, wheelSpeeds.frontLeftMetersPerSecond);
@@ -69,6 +69,15 @@ class Mecanum(val hw: HardwareMap, val telemetry: Telemetry) : SubsystemBase() {
         frontLeftMotor.setVelocity(LinearVelocity.fromMps(flVel))
         backRightMotor.setVelocity(LinearVelocity.fromMps(brVel))
         backLeftMotor.setVelocity(LinearVelocity.fromMps(blVel))
+    }*/
+
+    fun setChassisSpeeds(chassisSpeeds: ChassisSpeeds) {
+        val wheelSpeeds = kinematics.toWheelSpeeds(chassisSpeeds)
+
+        frontRightMotor.setVelocity(LinearVelocity.fromMps(wheelSpeeds.frontRightMetersPerSecond))
+        frontLeftMotor.setVelocity(LinearVelocity.fromMps(wheelSpeeds.frontLeftMetersPerSecond))
+        backRightMotor.setVelocity(LinearVelocity.fromMps(wheelSpeeds.rearRightMetersPerSecond))
+        backLeftMotor.setVelocity(LinearVelocity.fromMps(wheelSpeeds.rearLeftMetersPerSecond))
     }
 
     // Función para limitar la aceleración

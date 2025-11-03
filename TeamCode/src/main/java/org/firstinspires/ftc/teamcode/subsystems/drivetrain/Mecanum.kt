@@ -44,6 +44,8 @@ class Mecanum(val hw: HardwareMap, val telemetry: Telemetry) : SubsystemBase() {
         backLeftLocation, backRightLocation
     )
 
+    //val meccanum = Mecanum
+
     var prevVelLeft = 0.0
     var prevVelRight = 0.0
 
@@ -92,7 +94,7 @@ class Mecanum(val hw: HardwareMap, val telemetry: Telemetry) : SubsystemBase() {
         frontRightMotor = VelocityMotorEx(hw.get(DcMotorEx::class.java, MecanumConstants.Ids.frId),
             VelocityMotorExConfig(
                 DcMotor.ZeroPowerBehavior.FLOAT,
-                DcMotorSimple.Direction.REVERSE,
+                DcMotorSimple.Direction.FORWARD,
                 MecanumConstants.Physics.ticksPerRevolution,
                 frPIDFCoefficients
             ))

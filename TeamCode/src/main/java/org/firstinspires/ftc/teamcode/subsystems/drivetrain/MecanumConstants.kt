@@ -6,10 +6,10 @@ import kotlin.math.PI
 
 class MecanumConstants {
     object Ids {
-        const val frId: String = "frontRightMotor"
-        const val flId: String = "frontLeftMotor"
-        const val brId: String = "backRightMotor"
-        const val blId: String = "backLeftMotor"
+        const val frId: String = "frontRightMotor" // port 1 expansion
+        const val flId: String = "frontLeftMotor" // port 1 control
+        const val brId: String = "backRightMotor" // port 0 expansion
+        const val blId: String = "backLeftMotor" // port 3 control
     }
 
     object Physics {

@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.utils.colorSensor;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.ColorSensor;
@@ -11,6 +12,7 @@ import java.io.FileWriter;
 import org.firstinspires.ftc.teamcode.utils.colorSensor.ColorSensorEx.DetectedColor;
 
 @TeleOp(name = "ColorSensor-calibration", group = "Op Mode")
+@Disabled
 public class ColorCalibrationJSON extends LinearOpMode {
 
     ColorSensor colorSensor;

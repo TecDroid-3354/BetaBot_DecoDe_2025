@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
+import com.qualcomm.robotcore.hardware.IMU
 import com.seattlesolvers.solverslib.command.CommandOpMode
 import com.seattlesolvers.solverslib.gamepad.GamepadEx
 import org.firstinspires.ftc.teamcode.commands.JoystickCmd
@@ -11,6 +12,7 @@ class CMDOpMode : CommandOpMode() {
     //lateinit var mecanum: Mecanum
     lateinit var mecanum: Mecanum
     lateinit var gamepadEx: GamepadEx
+    lateinit var imu: IMU
     override fun initialize() {
         //mecanum = Mecanum(hardwareMap, telemetry)
         mecanum = Mecanum(hardwareMap, telemetry)

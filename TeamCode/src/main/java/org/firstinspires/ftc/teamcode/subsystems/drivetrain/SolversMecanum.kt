@@ -10,37 +10,58 @@ import com.seattlesolvers.solverslib.kinematics.wpilibkinematics.ChassisSpeeds
 import org.firstinspires.ftc.robotcore.external.Telemetry
 
 
-class SolversMecanum(val hw: HardwareMap, val telemetry: Telemetry) : SubsystemBase() {
+class SolversMecanum(
+    val hardwareMap: HardwareMap,
+    val telemetry: Telemetry
+) : SubsystemBase() {
 
+    // Declaring motors
     lateinit var frontRightMotor: Motor
     lateinit var frontLeftMotor: Motor
     lateinit var backRightMotor: Motor
     lateinit var backLeftMotor: Motor
 
-    lateinit var mecanum: MecanumDrive
+    // Declaring mecanum from solverslib
+    var mecanum: MecanumDrive
 
+    // Initialization code //
     init {
         motorsConfig()
 
+        // Setting up the mecanum using the previously declared motors
         mecanum = MecanumDrive(
             frontLeftMotor, frontRightMotor,
             backLeftMotor, backRightMotor
         )
     }
 
+    // Functional code //
+
+    // Robot-oriented chassis speeds
+    // Only takes one parameter: the chassis speeds to be used
     fun setChassisSpeeds(chassisSpeeds: ChassisSpeeds) {
-        mecanum.driveRobotCentric(chassisSpeeds.vyMetersPerSecond, chassisSpeeds.vxMetersPerSecond, chassisSpeeds.omegaRadiansPerSecond)
+        mecanum.driveRobotCentric(
+            chassisSpeeds.vyMetersPerSecond,
+            chassisSpeeds.vxMetersPerSecond,
+            chassisSpeeds.omegaRadiansPerSecond)
     }
 
+    // Field-oriented chassis speeds
+    // Takes two parameters: chassis speeds and gyro angle in degrees, with the last one taken from the IMU
     fun setChassisSpeedsFromFieldOriented(chassisSpeeds: ChassisSpeeds, gyroAngleInDegrees: Double) {
-        mecanum.driveFieldCentric(chassisSpeeds.vyMetersPerSecond, chassisSpeeds.vxMetersPerSecond, chassisSpeeds.omegaRadiansPerSecond, gyroAngleInDegrees)
+        mecanum.driveFieldCentric(
+            chassisSpeeds.vyMetersPerSecond,
+            chassisSpeeds.vxMetersPerSecond,
+            chassisSpeeds.omegaRadiansPerSecond,
+            gyroAngleInDegrees)
     }
 
+    // Setup code //
     fun motorsConfig() {
-        frontRightMotor = Motor(hw, MecanumConstants.Ids.frId, GoBILDA.RPM_312)
-        frontLeftMotor = Motor(hw, MecanumConstants.Ids.flId, GoBILDA.RPM_312)
-        backRightMotor = Motor(hw, MecanumConstants.Ids.brId, GoBILDA.RPM_312)
-        backLeftMotor = Motor(hw, MecanumConstants.Ids.blId, GoBILDA.RPM_312)
-
+        // Configuring motors according to their revolutions per minute
+        frontRightMotor = Motor(hardwareMap, MecanumConstants.Ids.frontRightId, GoBILDA.RPM_312)
+        frontLeftMotor = Motor(hardwareMap, MecanumConstants.Ids.frontLeftId, GoBILDA.RPM_312)
+        backRightMotor = Motor(hardwareMap, MecanumConstants.Ids.backRightId, GoBILDA.RPM_312)
+        backLeftMotor = Motor(hardwareMap, MecanumConstants.Ids.backLeftId, GoBILDA.RPM_312)
     }
 }

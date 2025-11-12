@@ -15,35 +15,60 @@ import kotlin.math.pow
  * Creates a new DefaultDrive.
  *
  * @param mecanum The drive subsystem this command will run on.
- * @param x x joystick value
- * @param y y joystick value
- * @param rx rx joystick value
+ * @param x Left joystick's X value
+ * @param y Left joystick's Y value
+ * @param heading Right joystick's X value
  */
 
 class JoystickCmd(
     val x: DoubleSupplier,
     val y: DoubleSupplier,
-    val rx: DoubleSupplier,
+    val heading: DoubleSupplier,
     val yawInDegrees: DoubleSupplier,
     val mecanum: SolversMecanum
 ) : CommandBase() {
 
+    // Setup code //
+
     init {
+        // addRequirements() tells the scheduler that the subsystem is being used
         addRequirements(mecanum)
     }
 
+
+    // Functional code //
+
     override fun execute() {
+        // This is the main body of the command. Is executed periodically while the command is scheduled
 
-        val yVel = clamp(y.asDouble.pow(3.0), -1.0, 1.0) //* MecanumConstants.Velocities.maxVelocityY.mps
-        val xVel = clamp(x.asDouble.pow(3.0), -1.0, 1.0) //* MecanumConstants.Velocities.maxVelocityX.mps
-        val rxVel = clamp(rx.asDouble.pow(3.0), -1.0, 1.0) //* MecanumConstants.Velocities.maxRotationVelocity.radPerSec
+        // The value is raised to a power of 3.0 so that the chassis speeds is smoother
+        val yVel = clamp(y.asDouble.pow(3.0), -1.0, 1.0)
+        val xVel = clamp(x.asDouble.pow(3.0), -1.0, 1.0)
+        val headingVel = clamp(heading.asDouble.pow(3.0), -1.0, 1.0)
 
+        // Declaring a chassis speeds
         val speeds = ChassisSpeeds(
             yVel,
             xVel,
-            rxVel)
+            headingVel)
 
-        //mecanum.setChassisSpeeds(speeds)
+        // Passing said chassis speeds so that the mecanum is able to use it
         mecanum.setChassisSpeedsFromFieldOriented(speeds, yawInDegrees.asDouble)
+    }
+
+
+    // Conditional code //
+
+    override fun initialize() {
+        // Piece of code to execute when the command is initially scheduled
+    }
+
+    override fun end(interrupted: Boolean) {
+        // Piece of code to execute once the command ends, either normally or unscheduled
+    }
+
+    override fun isFinished(): Boolean {
+        // Condition to determine whether the command is finished or not
+        return super.isFinished()
     }
 }

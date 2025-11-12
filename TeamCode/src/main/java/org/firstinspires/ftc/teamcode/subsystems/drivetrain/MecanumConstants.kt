@@ -6,10 +6,10 @@ import kotlin.math.PI
 
 class MecanumConstants {
     object Ids {
-        const val frId: String = "frontRightMotor" // port 1 expansion
-        const val flId: String = "frontLeftMotor" // port 1 control
-        const val brId: String = "backRightMotor" // port 0 expansion
-        const val blId: String = "backLeftMotor" // port 3 control
+        const val frontRightId: String = "frontRightMotor" // port 1 expansion
+        const val frontLeftId: String = "frontLeftMotor" // port 1 control
+        const val backRightId: String = "backRightMotor" // port 0 expansion
+        const val backLeftId: String = "backLeftMotor" // port 3 control
     }
 
     object Physics {
@@ -21,6 +21,5 @@ class MecanumConstants {
         val maxVelocityY: LinearVelocity = LinearVelocity.fromMps(1.5)
         val maxVelocityX: LinearVelocity = LinearVelocity.fromMps(1.5)
         val maxRotationVelocity: AngularVelocity = AngularVelocity.fromDegPerSec(30.0)
-
     }
 }

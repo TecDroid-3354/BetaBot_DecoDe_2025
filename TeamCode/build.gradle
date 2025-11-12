@@ -22,6 +22,11 @@ android {
         jvmTarget = '1.8'
     }
 
+    compileSdk 34
+    defaultConfig {
+        minSdk 24
+    }
+
     packagingOptions {
         jniLibs.useLegacyPackaging true
     }
@@ -36,7 +41,7 @@ repositories {
         url = 'https://maven.pedropathing.com'
     }
     maven {
-        url = 'https://mymaven.bylazar.com/releases'
+        url = "https://mymaven.bylazar.com/releases"
     }
 
     maven {
@@ -66,5 +71,5 @@ dependencies {
     implementation 'com.pedropathing:telemetry:0.0.6'
 
     // Panels Dashboard
-    implementation "com.bylazar:fullpanels:1.0.5"
+    implementation "com.bylazar:fullpanels:1.0.9"
 }

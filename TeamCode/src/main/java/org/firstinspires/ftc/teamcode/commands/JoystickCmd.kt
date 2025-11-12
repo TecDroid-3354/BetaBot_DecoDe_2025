@@ -1,10 +1,12 @@
 package org.firstinspires.ftc.teamcode.commands
 
 import com.seattlesolvers.solverslib.command.CommandBase
+import com.seattlesolvers.solverslib.geometry.Rotation2d
 import com.seattlesolvers.solverslib.kinematics.wpilibkinematics.ChassisSpeeds
 import com.seattlesolvers.solverslib.util.MathUtils.clamp
 import org.firstinspires.ftc.teamcode.subsystems.drivetrain.Mecanum
 import org.firstinspires.ftc.teamcode.subsystems.drivetrain.MecanumConstants
+import org.firstinspires.ftc.teamcode.subsystems.drivetrain.SolversMecanum
 import java.util.function.DoubleSupplier
 import kotlin.math.pow
 
@@ -22,7 +24,8 @@ class JoystickCmd(
     val x: DoubleSupplier,
     val y: DoubleSupplier,
     val rx: DoubleSupplier,
-    val mecanum: Mecanum
+    val yawInDegrees: DoubleSupplier,
+    val mecanum: SolversMecanum
 ) : CommandBase() {
 
     init {
@@ -31,14 +34,16 @@ class JoystickCmd(
 
     override fun execute() {
 
-        val yVel = clamp(y.asDouble.pow(3.0), -1.0, 1.0) * MecanumConstants.Velocities.maxVelocityY.mps
-        val xVel = clamp(x.asDouble.pow(3.0), -1.0, 1.0) * MecanumConstants.Velocities.maxVelocityX.mps
-        val rxVel = clamp(rx.asDouble.pow(3.0), -1.0, 1.0) * MecanumConstants.Velocities.maxRotationVelocity.radPerSec
+        val yVel = clamp(y.asDouble.pow(3.0), -1.0, 1.0) //* MecanumConstants.Velocities.maxVelocityY.mps
+        val xVel = clamp(x.asDouble.pow(3.0), -1.0, 1.0) //* MecanumConstants.Velocities.maxVelocityX.mps
+        val rxVel = clamp(rx.asDouble.pow(3.0), -1.0, 1.0) //* MecanumConstants.Velocities.maxRotationVelocity.radPerSec
 
-        val speeds = ChassisSpeeds( yVel,
+        val speeds = ChassisSpeeds(
+            yVel,
             xVel,
             rxVel)
 
-        mecanum.setChassisSpeeds(speeds)
+        //mecanum.setChassisSpeeds(speeds)
+        mecanum.setChassisSpeedsFromFieldOriented(speeds, yawInDegrees.asDouble)
     }
 }

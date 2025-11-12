@@ -35,36 +35,18 @@ class CMDOpMode : CommandOpMode() {
 
     // Declaring useful components
     lateinit var controller: GamepadEx
-    lateinit var imu: IMU
-    lateinit var otos: SparkFunOTOS
-    lateinit var revHubOrientation: RevHubOrientationOnRobot
 
-    // Initializing the robot
+    // Here, declare code to be executed right after pressing the INIT button
     override fun initialize() {
-        // Here, declare code to be executed right after pressing the INIT button
-        // Including, for example, declaration of subsystems, configuring the IMU, etc.
-
-        // REV Hub IMU declaration
-        otos = hardwareMap.get(SparkFunOTOS::class.java, "otos")
-        imu = hardwareMap.get(IMU::class.java, "imu")
-        imu.resetYaw()
-
-        revHubOrientation = RevHubOrientationOnRobot(
-            RevHubOrientationOnRobot.LogoFacingDirection.RIGHT,
-            RevHubOrientationOnRobot.UsbFacingDirection.FORWARD
-        )
-
-        imu.initialize(IMU.Parameters(revHubOrientation))
-
         /* Subsystem initialization */
 
-        // Initializing the mecanum
+        // Initializing the mecanum & its default command
         mecanum = SolversMecanum(hardwareMap, telemetry)
         mecanum.defaultCommand = JoystickCmd(
             { -controller.leftX },
             { controller.leftY },
             { -controller.rightX },
-            { getRobotYaw(AngleUnit.DEGREES) },
+            { mecanum.getRobotYaw(AngleUnit.DEGREES) },
             mecanum
         )
 
@@ -73,27 +55,16 @@ class CMDOpMode : CommandOpMode() {
         configureButtonBindings()
     }
 
-    /* ! FUNCTIONAL CODE ! */
-    fun getRobotYaw(angleUnit: AngleUnit): Double = imu.robotYawPitchRollAngles.getYaw(angleUnit)
-
+    // All control bindings that involve command execution are declared here
     fun configureButtonBindings() {
         GamepadButton(controller, GamepadKeys.Button.START)
             .whenPressed(InstantCommand({
-                imu.resetYaw()
+                mecanum.resetRobotYaw()
             }))
     }
 
     fun periodic() {
-        /*telemetry.addData("frontRight", mecanum.frontRightMotor.getLinearVelocity().mps)
-        telemetry.addData("frontLeft", mecanum.frontLeftMotor.getLinearVelocity().mps)
-        telemetry.addData("backRight", mecanum.backRightMotor.getLinearVelocity().mps)
-        telemetry.addData("backLeft", mecanum.backLeftMotor.getLinearVelocity().mps)*/
 
-        // Telemetry to retrieve useful data
-        telemetry.addData("RobotYaw", getRobotYaw(AngleUnit.DEGREES))
-        telemetry.addData("X", otos.position.x)
-        telemetry.addData("Y", otos.position.y)
-        telemetry.addData("H", otos.position.h)
     }
 
 

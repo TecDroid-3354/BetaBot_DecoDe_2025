@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode.pedroPathing;
 
-import com.bylazar.configurables.annotations.Configurable;
+import com.pedropathing.control.PIDFCoefficients;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.follower.FollowerConstants;
 import com.pedropathing.ftc.FollowerBuilder;
@@ -34,7 +34,9 @@ public class Constants {
             .lateralZeroPowerAcceleration(-52.0536)
             .useSecondaryTranslationalPIDF(true)
             .useSecondaryHeadingPIDF(true)
-            .useSecondaryDrivePIDF(true);
+            .useSecondaryDrivePIDF(true)
+            .translationalPIDFCoefficients(new PIDFCoefficients(0.05, 0.0, 0.0, 0.0))
+            .secondaryTranslationalPIDFCoefficients(new PIDFCoefficients(0.35,0.0,0.01,0.015));
 
     public static PathConstraints pathConstraints = new PathConstraints(0.99, 100, 1, 1);
 

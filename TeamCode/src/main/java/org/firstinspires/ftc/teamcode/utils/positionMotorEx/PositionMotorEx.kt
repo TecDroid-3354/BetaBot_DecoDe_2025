@@ -3,62 +3,70 @@ package org.firstinspires.ftc.teamcode.utils.positionMotorEx
 import Angle
 import AngularVelocity
 import Distance
-import com.qualcomm.robotcore.hardware.DcMotor
-import com.qualcomm.robotcore.hardware.DcMotorEx
-import com.qualcomm.robotcore.hardware.DcMotorSimple
 import com.qualcomm.robotcore.hardware.PIDFCoefficients
 import com.seattlesolvers.solverslib.controller.PIDFController
+import com.seattlesolvers.solverslib.hardware.motors.Motor
 import kotlin.math.abs
 
-
+// Custom class to declare motors that take positions
 class PositionMotorEx(
-    private val motor: DcMotorEx,
+    private val motor: Motor,
     override var config: PositionMotorExConfig
 ) : IPositionMotorEx {
 
-    private var pidfController: PIDFController = PIDFController(config.pidfCoefficients)
+    // Defining a few variables
     private var lastPower = 0.0
-    private var gearRatio = 1.0
+
+    // Setting up the PID controller that will manage the position-achieving
+    private var pidfController: PIDFController = PIDFController(config.pidfCoefficients)
+
+
+    /* ! CONFIG METHODS ! */
 
     init {
         applyConfig()
     }
 
+    // The following functions, applyConfig()
     override fun applyConfig() {
-        motor.zeroPowerBehavior = config.zeroPowerBehavior
-        motor.direction = config.direction
+        // Setting up the motor & encoder default behavior
+        motor.setZeroPowerBehavior(config.zeroPowerBehavior)
+        motor.encoder.setDirection(config.direction)
+
+        // Arranging PIDs
         setPIDFCoefficients(config.pidfCoefficients)
     }
 
     override fun applyConfig(config: PositionMotorExConfig) {
+        // This method takes a custom configuration and applies it
         this.config = config
         applyConfig()
     }
 
-    override fun setGearRatio(gearRatio: Double) {
-        this.gearRatio = gearRatio
-    }
 
-    override fun setPIDFCoefficients(pidfCoefficients: PIDFCoefficients) {
-        pidfController.setPIDF(pidfCoefficients.p, pidfCoefficients.i, pidfCoefficients.d, pidfCoefficients.f)
-    }
+    /* ! FUNCTIONAL METHODS ! */
 
+    // Sets raw power using a number between [-1.0, 1.0]
     override fun setPower(power: Double) {
+        // Basically, a condition that evaluates that the power passed isn't too low or equal
+        // to the past power used
         if ((abs(this.lastPower - power) > config.powerThreshold) || (power == 0.0 && lastPower != 0.0)) {
             lastPower = power
-            motor.power = power
+            motor.set(power)
         }
     }
 
+    // Allows us to set a position based on a given angle
     override fun setPosition(setPoint: Angle) {
         pidfController.setPoint = setPoint.rotations
 
+        // Closed PID looped control
         while (!pidfController.atSetPoint()) {
             val voltage = pidfController.calculate(getPosition().rotations)
             setPower(voltage)
         }
 
-        setPower(0.0)
+        stopMotor()
     }
 
     override fun setPosition(distance: Distance, circumference: Distance) {
@@ -67,10 +75,36 @@ class PositionMotorEx(
         setPosition(Angle.fromRotations(rotations))
     }
 
-    override fun setDirection(direction: DcMotorSimple.Direction) {
-        motor.direction = direction
+    // Stops the motor using two instructions
+    override fun stopMotor() {
+        motor.set(0.0)
+        motor.stopMotor()
     }
 
+
+    /* ! SETTER METHODS ! */
+
+    // This method takes a custom gearRatio & applies it
+    override fun setGearRatio(gearRatio: Double) {
+        config.gearRatio = gearRatio
+    }
+
+    // Takes custom PID Coefficients and applies them
+    override fun setPIDFCoefficients(pidfCoefficients: PIDFCoefficients) {
+        // Setting independent PIDs
+        pidfController.setPIDF(
+            pidfCoefficients.p,
+            pidfCoefficients.i,
+            pidfCoefficients.d,
+            pidfCoefficients.f)
+    }
+
+    // Changes the direction of a motor
+    override fun setDirection(direction: Motor.Direction) {
+        motor.encoder.setDirection(direction)
+    }
+
+    // The following two functions changes the PID tolerance according to the given parameters
     override fun setPidfTolerance(tolerance: Angle) {
         pidfController.setTolerance(tolerance.rotations)
     }
@@ -80,13 +114,20 @@ class PositionMotorEx(
         setPidfTolerance(Angle.fromRotations(rotations))
     }
 
+    // Sets the run mode
+    override fun setMode(mode: Motor.RunMode) {
+        motor.setRunMode(mode)
+    }
+
+
+    /* ! GETTER METHODS ! */
+
+    // Returns the current position
     override fun getPosition(): Angle {
-        return Angle.fromRotations(motor.currentPosition / config.ticksPerRevolution * gearRatio)
+        return Angle.fromRotations(motor.currentPosition / config.ticksPerRevolution * config.gearRatio)
     }
 
-    override fun getVelocity(): AngularVelocity = AngularVelocity.fromRps(motor.velocity / config.ticksPerRevolution * gearRatio)
-
-    override fun setMode(mode: DcMotor.RunMode) {
-        motor.setMode(mode)
-    }
+    // Returns the current velocity
+    override fun getVelocity(): AngularVelocity =
+        AngularVelocity.fromRps(motor.get() / config.ticksPerRevolution * config.gearRatio)
 }

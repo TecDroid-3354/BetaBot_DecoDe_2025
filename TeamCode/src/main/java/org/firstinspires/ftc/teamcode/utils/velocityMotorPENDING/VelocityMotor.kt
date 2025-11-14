@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.utils.velocityMotor
+package org.firstinspires.ftc.teamcode.utils.velocityMotorPENDING
 
 import Angle
 import AngularVelocity
@@ -7,7 +7,6 @@ import LinearVelocity
 import com.qualcomm.robotcore.hardware.DcMotor
 import com.qualcomm.robotcore.hardware.DcMotorEx
 import com.qualcomm.robotcore.hardware.DcMotorSimple
-import com.qualcomm.robotcore.hardware.PIDFCoefficients
 import com.seattlesolvers.solverslib.controller.wpilibcontroller.SimpleMotorFeedforward
 import kotlin.math.abs
 

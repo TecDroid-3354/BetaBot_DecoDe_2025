@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode.subsystems.drivetrain
 
-import LinearVelocity
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot
 import com.qualcomm.hardware.sparkfun.SparkFunOTOS
 import com.qualcomm.robotcore.hardware.HardwareMap

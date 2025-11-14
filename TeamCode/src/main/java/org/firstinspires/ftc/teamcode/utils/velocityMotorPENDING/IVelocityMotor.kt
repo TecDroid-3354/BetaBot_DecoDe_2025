@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.utils.velocityMotor
+package org.firstinspires.ftc.teamcode.utils.velocityMotorPENDING
 
 import Angle
 import AngularVelocity
@@ -6,7 +6,6 @@ import Distance
 import LinearVelocity
 import com.qualcomm.robotcore.hardware.DcMotor
 import com.qualcomm.robotcore.hardware.DcMotorSimple
-import com.qualcomm.robotcore.hardware.PIDFCoefficients
 
 data class SVACoefficients(
     val kS: Double,

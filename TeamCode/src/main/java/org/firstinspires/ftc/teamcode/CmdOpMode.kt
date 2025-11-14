@@ -1,9 +1,6 @@
 package org.firstinspires.ftc.teamcode
 
-import com.qualcomm.hardware.rev.RevHubOrientationOnRobot
-import com.qualcomm.hardware.sparkfun.SparkFunOTOS
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
-import com.qualcomm.robotcore.hardware.IMU
 import com.seattlesolvers.solverslib.command.CommandOpMode
 import com.seattlesolvers.solverslib.command.CommandScheduler
 import com.seattlesolvers.solverslib.command.InstantCommand
@@ -66,7 +63,6 @@ class CMDOpMode : CommandOpMode() {
     fun periodic() {
 
     }
-
 
     // Main code body
     override fun runOpMode() {

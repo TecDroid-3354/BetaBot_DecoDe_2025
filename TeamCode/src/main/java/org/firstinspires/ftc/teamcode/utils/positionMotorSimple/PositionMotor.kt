@@ -1,25 +1,19 @@
-package org.firstinspires.ftc.teamcode.utils.positionMotorEx
+package org.firstinspires.ftc.teamcode.utils.positionMotorSimple
 
 import Angle
 import AngularVelocity
 import Distance
-import com.qualcomm.robotcore.hardware.PIDFCoefficients
-import com.seattlesolvers.solverslib.controller.PIDFController
 import com.seattlesolvers.solverslib.hardware.motors.Motor
 import kotlin.math.abs
 
-// Custom class to declare motors that take positions
-class PositionMotorEx(
+
+class PositionMotor(
     private val motor: Motor,
-    override var config: PositionMotorExConfig
-) : IPositionMotorEx {
+    override var config: PositionMotorConfig
+) : IPositionMotor {
 
-    // Defining a few variables
+    // Defining a few, useful variables
     private var lastPower = 0.0
-
-    // Setting up the PID controller that will manage the position-achieving
-    private var pidfController: PIDFController = PIDFController(config.pidfCoefficients)
-
 
     /* ! CONFIG METHODS ! */
 
@@ -33,16 +27,15 @@ class PositionMotorEx(
         motor.setZeroPowerBehavior(config.zeroPowerBehavior)
         motor.encoder.setDirection(config.direction)
 
-        // Arranging PIDs
-        setPIDFCoefficients(config.pidfCoefficients)
+        /// Arranging a P coefficient to achieve desired positions
+        motor.positionCoefficient = config.pCoefficient
     }
 
-    override fun applyConfig(config: PositionMotorExConfig) {
-        // This method takes a custom configuration and applies it
+    override fun applyConfig(config: PositionMotorConfig) {
+        // Takes a custom configuration & applies it
         this.config = config
         applyConfig()
     }
-
 
     /* ! FUNCTIONAL METHODS ! */
 
@@ -57,16 +50,8 @@ class PositionMotorEx(
     }
 
     // The following two methods allow us to set a position based on a given angle according to the parameters
-    override fun setPosition(setPoint: Angle) {
-        pidfController.setPoint = setPoint.rotations
-
-        // Closed PID looped control
-        while (!pidfController.atSetPoint()) {
-            val voltage = pidfController.calculate(getPosition().rotations)
-            setPower(voltage)
-        }
-
-        stopMotor()
+    override fun setPosition(angle: Angle) {
+        motor.setTargetPosition((angle.rotations * config.ticksPerRevolution * config.gearRatio).toInt())
     }
 
     override fun setPosition(distance: Distance, circumference: Distance) {
@@ -81,7 +66,6 @@ class PositionMotorEx(
         motor.stopMotor()
     }
 
-
     /* ! SETTER METHODS ! */
 
     // This method takes a custom gearRatio & applies it
@@ -89,14 +73,9 @@ class PositionMotorEx(
         config.gearRatio = gearRatio
     }
 
-    // Takes custom PID Coefficients and applies them
-    override fun setPIDFCoefficients(pidfCoefficients: PIDFCoefficients) {
-        // Setting independent PIDs
-        pidfController.setPIDF(
-            pidfCoefficients.p,
-            pidfCoefficients.i,
-            pidfCoefficients.d,
-            pidfCoefficients.f)
+    // Takes a custom P coefficient & applies it
+    override fun setPCoefficient(p: Double) {
+        motor.positionCoefficient = p
     }
 
     // Changes the direction of a motor
@@ -105,13 +84,13 @@ class PositionMotorEx(
     }
 
     // The following two functions change the PID tolerance according to the given parameters
-    override fun setPidfTolerance(tolerance: Angle) {
-        pidfController.setTolerance(tolerance.rotations)
+    override fun setTolerance(tolerance: Angle) {
+        motor.setPositionTolerance(tolerance.rotations * config.ticksPerRevolution * config.gearRatio)
     }
 
-    override fun setPidfTolerance(tolerance: Distance, circumference: Distance) {
+    override fun setTolerance(tolerance: Distance, circumference: Distance) {
         val rotations = tolerance.meters / circumference.meters
-        setPidfTolerance(Angle.fromRotations(rotations))
+        setTolerance(Angle.fromRotations(rotations))
     }
 
     // Sets the run mode
@@ -127,4 +106,5 @@ class PositionMotorEx(
     // Returns the current velocity
     override fun getVelocity(): AngularVelocity =
         AngularVelocity.fromRps(motor.get() / config.ticksPerRevolution * config.gearRatio)
+
 }

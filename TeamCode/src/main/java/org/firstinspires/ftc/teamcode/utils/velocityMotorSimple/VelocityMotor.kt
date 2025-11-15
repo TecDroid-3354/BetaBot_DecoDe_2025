@@ -1,23 +1,24 @@
-package org.firstinspires.ftc.teamcode.utils.velocityMotorEx
+package org.firstinspires.ftc.teamcode.utils.velocityMotorSimple
 
 import Angle
 import AngularVelocity
 import Distance
 import LinearVelocity
-import com.seattlesolvers.solverslib.controller.PIDFController
+import com.seattlesolvers.solverslib.controller.wpilibcontroller.SimpleMotorFeedforward
 import com.seattlesolvers.solverslib.hardware.motors.Motor
 import kotlin.math.abs
 
-// Custom class to declare custom PID motors that take velocities
-class VelocityMotorEx(
+// Custom class to declare motors that take velocities
+class VelocityMotor(
     private val motor: Motor,
     override var config: VelocityMotorConfig
-) : IVelocityMotorEx {
+) : IVelocityMotor {
 
     // Defining a few variables
     private var lastPower = 0.0
-    private var wheelCircumference = Distance.fromCm(7.5) //todo: check placeholder value
-
+    private var wheelCircumference = Distance.fromCm(7.5)
+    private var feedforward: SimpleMotorFeedforward =
+        SimpleMotorFeedforward(config.svaCoefficients.kS, config.svaCoefficients.kV, config.svaCoefficients.kA)
 
     /* ! CONFIG METHODS ! */
 
@@ -28,12 +29,9 @@ class VelocityMotorEx(
     // The following functions, applyConfig()
     override fun applyConfig() {
         // Setting up the motor & encoder default behavior
+        val coefficients = config.svaCoefficients
         motor.setZeroPowerBehavior(config.zeroPowerBehavior)
         motor.encoder.setDirection(config.direction)
-
-        // Arranging velocity PIDs
-        val coefficients = config.pidfCoefficients
-        motor.setVeloCoefficients(coefficients.p, coefficients.i, coefficients.d)
     }
 
     override fun applyConfig(config: VelocityMotorConfig) {
@@ -41,7 +39,6 @@ class VelocityMotorEx(
         this.config = config
         applyConfig()
     }
-
 
     /* ! FUNCTIONAL METHODS ! */
 
@@ -57,8 +54,7 @@ class VelocityMotorEx(
 
     // The following three methods declare a velocity according to the given params
     override fun setVelocity(angularVelocity: AngularVelocity) {
-        // with FTCLib: motor.velocity = angularVelocity.rps * config.ticksPerRevolution * gearRatio
-        motor.set(angularVelocity.rps * config.ticksPerRevolution * config.gearRatio)
+        setPower(feedforward.calculate(angularVelocity.rps))
     }
 
     override fun setVelocity(linearVelocity: LinearVelocity) {
@@ -80,17 +76,10 @@ class VelocityMotorEx(
         motor.stopMotor()
     }
 
-
     /* ! SETTER METHODS ! */
 
     override fun setGearRatio(gearRatio: Double) {
         config.gearRatio = gearRatio
-    }
-
-    override fun setPIDFCoefficients(pidfCoefficients: PIDFController) {
-        // TODO: Consider F
-        val coefficients = config.pidfCoefficients
-        motor.setVeloCoefficients(coefficients.p, coefficients.i, coefficients.d)
     }
 
     // Sets the direction of the motor
@@ -112,7 +101,7 @@ class VelocityMotorEx(
     override fun getPosition(): Angle =
         Angle.fromRotations(motor.currentPosition / config.ticksPerRevolution * config.gearRatio)
 
-    // Returns the current velocity
+    // Returns a velocity
     override fun getVelocity(): AngularVelocity = AngularVelocity.fromRps(motor.get() / config.ticksPerRevolution * config.gearRatio)
 
     override fun getLinearVelocity(): LinearVelocity =
@@ -120,6 +109,5 @@ class VelocityMotorEx(
 
     override fun getLinearVelocity(circumference: Distance): LinearVelocity =
         LinearVelocity.fromMps(circumference.meters * (motor.get() / config.ticksPerRevolution * config.gearRatio))
-
 
 }

@@ -10,6 +10,8 @@ import com.seattlesolvers.solverslib.gamepad.GamepadKeys
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit
 import org.firstinspires.ftc.teamcode.commands.JoystickCmd
 import org.firstinspires.ftc.teamcode.subsystems.drivetrain.SolversMecanum
+import org.firstinspires.ftc.teamcode.subsystems.intake.Intake
+import org.firstinspires.ftc.teamcode.subsystems.intake.IntakeDirection
 
 
 // Personally, I chose to run my code using a command-based Op Mode since it works better for me
@@ -29,6 +31,7 @@ class CMDOpMode : CommandOpMode() {
 
     // Declaring subsystems
     lateinit var mecanum: SolversMecanum
+    lateinit var intake: Intake
 
     // Declaring useful components
     lateinit var controller: GamepadEx
@@ -47,6 +50,8 @@ class CMDOpMode : CommandOpMode() {
             mecanum
         )
 
+        intake = Intake(hardwareMap, telemetry)
+
         // Initializing controller & button bindings
         controller = GamepadEx(gamepad1)
         configureButtonBindings()
@@ -57,6 +62,20 @@ class CMDOpMode : CommandOpMode() {
         GamepadButton(controller, GamepadKeys.Button.START)
             .whenPressed(InstantCommand({
                 mecanum.resetRobotYaw()
+            }))
+
+        GamepadButton(controller, GamepadKeys.Button.RIGHT_BUMPER)
+            .whenPressed(InstantCommand({
+                intake.enableIntake(IntakeDirection.RIGHT)
+            })).whenReleased(InstantCommand({
+                intake.stopIntake(IntakeDirection.RIGHT)
+            }))
+
+        GamepadButton(controller, GamepadKeys.Button.LEFT_BUMPER)
+            .whenPressed(InstantCommand({
+                intake.enableIntake(IntakeDirection.LEFT)
+            })).whenReleased(InstantCommand({
+                intake.stopIntake(IntakeDirection.LEFT)
             }))
     }
 

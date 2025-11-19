@@ -35,6 +35,10 @@ class Shooter(hw: HardwareMap, val telemetry: Telemetry): SubsystemBase() {
         motorConfig()
     }
 
+    override fun periodic() {
+        telemetry.addData("Shooter velocity in deg/sec", getVelocityInDegPerSec())
+    }
+
     /**
      * Sets the motor's velocity to a desired angular velocity
      */
@@ -50,19 +54,19 @@ class Shooter(hw: HardwareMap, val telemetry: Telemetry): SubsystemBase() {
     }
 
     /**
-     * Gets the current motor's velocity in degrees / second
-     * @return the current velocity in deg / sec
-     */
-    fun getVelocityInDegPerSec(): Double {
-        return motor.getVelocity().degPerSec
-    }
-
-    /**
      * Checks if the shooter motor is active and running, useful for logic control
      * @return true if the motor is running
      */
     fun isActive(): Boolean {
         return motor.getVelocity().rotPerSec >= 0.5
+    }
+
+    /**
+     * Gets the current motor's velocity in degrees / second
+     * @return the current velocity in deg / sec
+     */
+    fun getVelocityInDegPerSec(): Double {
+        return motor.getVelocity().degPerSec
     }
 
     /**

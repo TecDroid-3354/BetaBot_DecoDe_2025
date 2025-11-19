@@ -105,6 +105,11 @@ class VelocityMotorEx(
     // Sets the run mode
     override fun setMode(mode: Motor.RunMode) = motor.setRunMode(mode)
 
+    // Sets the inverted value to the motor
+    override fun setInverted(isInverted: Boolean) {
+        motor.inverted = isInverted
+    }
+
 
     /* ! GETTER METHODS ! */
 

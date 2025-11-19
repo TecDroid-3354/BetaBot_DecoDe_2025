@@ -41,6 +41,7 @@ interface IVelocityMotorEx {
     fun setDirection(direction: Motor.Direction)
     fun setCircumference(circumference: Distance)
     fun setMode(mode: Motor.RunMode)
+    fun setInverted(isInverted: Boolean)
 
     /* ! GETTER METHODS ! */
     fun getPosition(): Angle

@@ -9,6 +9,7 @@ import com.seattlesolvers.solverslib.gamepad.GamepadEx
 import com.seattlesolvers.solverslib.gamepad.GamepadKeys
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit
 import org.firstinspires.ftc.teamcode.commands.JoystickCmd
+import org.firstinspires.ftc.teamcode.shooter.Shooter
 import org.firstinspires.ftc.teamcode.subsystems.drivetrain.SolversMecanum
 
 
@@ -33,6 +34,10 @@ class CMDOpMode : CommandOpMode() {
     // Declaring useful components
     lateinit var controller: GamepadEx
 
+    lateinit var shooter: Shooter
+
+
+
     // Here, declare code to be executed right after pressing the INIT button
     override fun initialize() {
         /* Subsystem initialization */
@@ -47,6 +52,7 @@ class CMDOpMode : CommandOpMode() {
             mecanum
         )
 
+        shooter = Shooter(hardwareMap, telemetry)
         // Initializing controller & button bindings
         controller = GamepadEx(gamepad1)
         configureButtonBindings()
@@ -58,6 +64,12 @@ class CMDOpMode : CommandOpMode() {
             .whenPressed(InstantCommand({
                 mecanum.resetRobotYaw()
             }))
+
+        GamepadButton(controller, GamepadKeys.Button.A)
+            .whenPressed(InstantCommand({ shooter.setVelocity(AngularVelocity.fromDegPerSec(90.0)) }))
+
+        GamepadButton(controller, GamepadKeys.Button.B)
+            .whenPressed(InstantCommand({ shooter.stop() }))
     }
 
     fun periodic() {
@@ -75,6 +87,7 @@ class CMDOpMode : CommandOpMode() {
         // Run the scheduler
         while (!isStopRequested && opModeIsActive()) {
             // Command for actually running the scheduler
+
             CommandScheduler.getInstance().run()
             periodic()
 

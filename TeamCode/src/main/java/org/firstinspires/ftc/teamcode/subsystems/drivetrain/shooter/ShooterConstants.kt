@@ -9,6 +9,6 @@ object ShooterConstants {
     val zeroPowerBehavior = Motor.ZeroPowerBehavior.BRAKE
     val direction = Motor.Direction.FORWARD
     // This value needs to be measured physically
-    val ticksPerRevolution = 0.0
+    val ticksPerRevolution = 28.0
     val pidController = PIDController(0.1, 0.0, 0.0)
 }

@@ -36,7 +36,11 @@ class Shooter(hw: HardwareMap, val telemetry: Telemetry): SubsystemBase() {
     }
 
     override fun periodic() {
-        telemetry.addData("Shooter velocity in deg/sec", getVelocityInDegPerSec())
+        telemetry.addData("Shooter velocity in deg/sec", getVelocity())
+        telemetry.addData("Position", motor.motor.currentPosition)
+        telemetry.addData("rps requested", motor.getVelocity().rps)
+        telemetry.addData("rps *  ticks per second", motor.getVelocity().rps * 28)
+
     }
 
     /**
@@ -65,8 +69,8 @@ class Shooter(hw: HardwareMap, val telemetry: Telemetry): SubsystemBase() {
      * Gets the current motor's velocity in degrees / second
      * @return the current velocity in deg / sec
      */
-    fun getVelocityInDegPerSec(): Double {
-        return motor.getVelocity().degPerSec
+    fun getVelocity(): Double {
+        return motor.getVelocity().rotPerSec
     }
 
     /**

@@ -6,12 +6,13 @@ import Distance
 import LinearVelocity
 import com.seattlesolvers.solverslib.controller.PIDFController
 import com.seattlesolvers.solverslib.hardware.motors.Motor
+import org.firstinspires.ftc.robotcore.external.Telemetry
 import kotlin.math.abs
 
 // Custom class to declare custom PID motors that take velocities
 class VelocityMotorEx(
-    private val motor: Motor,
-    override var config: VelocityMotorConfig
+    val motor: Motor,
+    override var config: VelocityMotorConfig,
 ) : IVelocityMotorEx {
 
     // Defining a few variables
@@ -58,7 +59,10 @@ class VelocityMotorEx(
     // The following three methods declare a velocity according to the given params
     override fun setVelocity(angularVelocity: AngularVelocity) {
         // with FTCLib: motor.velocity = angularVelocity.rps * config.ticksPerRevolution * gearRatio
-        motor.set(angularVelocity.rps * config.ticksPerRevolution * config.gearRatio)
+        // 0.035714285714 is the value that you get when dividing 100 percent by the max ticks per second the motor can do,
+        // this value is necessary for giving the right velocity to the motor, because the motor.set() method is given in
+        // percentage, not in velocity
+        motor.set(angularVelocity.rps * config.ticksPerRevolution * config.gearRatio * 0.035714285714)
     }
 
     override fun setVelocity(linearVelocity: LinearVelocity) {

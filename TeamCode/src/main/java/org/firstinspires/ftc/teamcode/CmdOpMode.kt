@@ -4,12 +4,17 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 import com.seattlesolvers.solverslib.command.CommandOpMode
 import com.seattlesolvers.solverslib.command.CommandScheduler
 import com.seattlesolvers.solverslib.command.InstantCommand
+import com.seattlesolvers.solverslib.command.SequentialCommandGroup
+import com.seattlesolvers.solverslib.command.WaitCommand
 import com.seattlesolvers.solverslib.command.button.GamepadButton
 import com.seattlesolvers.solverslib.gamepad.GamepadEx
 import com.seattlesolvers.solverslib.gamepad.GamepadKeys
+import com.seattlesolvers.solverslib.hardware.AbsoluteAnalogEncoder
+import com.seattlesolvers.solverslib.hardware.ServoEx
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit
 import org.firstinspires.ftc.teamcode.commands.JoystickCmd
 import org.firstinspires.ftc.teamcode.subsystems.drivetrain.SolversMecanum
+import org.firstinspires.ftc.teamcode.subsystems.indexer.Indexer
 
 
 // Personally, I chose to run my code using a command-based Op Mode since it works better for me
@@ -29,6 +34,8 @@ class CMDOpMode : CommandOpMode() {
 
     // Declaring subsystems
     lateinit var mecanum: SolversMecanum
+    lateinit var indexer: Indexer
+    lateinit var absoluteEncoder: AbsoluteAnalogEncoder
 
     // Declaring useful components
     lateinit var controller: GamepadEx
@@ -47,6 +54,9 @@ class CMDOpMode : CommandOpMode() {
             mecanum
         )
 
+        indexer = Indexer(hardwareMap, telemetry)
+        absoluteEncoder = AbsoluteAnalogEncoder(hardwareMap, "absoluteEncoder", 3.3, AngleUnit.DEGREES)
+
         // Initializing controller & button bindings
         controller = GamepadEx(gamepad1)
         configureButtonBindings()
@@ -58,9 +68,13 @@ class CMDOpMode : CommandOpMode() {
             .whenPressed(InstantCommand({
                 mecanum.resetRobotYaw()
             }))
+
+        GamepadButton(controller, GamepadKeys.Button.A)
+            .whenPressed(indexer.feedAllShooter())
     }
 
     fun periodic() {
+        telemetry.addData("Position:",absoluteEncoder.currentPosition)
 
     }
 

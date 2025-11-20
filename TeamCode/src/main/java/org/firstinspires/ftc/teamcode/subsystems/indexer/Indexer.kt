@@ -26,17 +26,17 @@ class Indexer(hw: HardwareMap, telemetry: Telemetry) : SubsystemBase() {
 
     init {
         frontSlot = Slot(
-            SlotConfig(Ids.servoFront, Ids.colorSensorFront),
+            SlotConfig(Ids.frontServo, Ids.colorSensorFront),
             hw,
             telemetry)
 
         leftSlot = Slot(
-            SlotConfig(Ids.servoLeft, Ids.colorSensorLeft),
+            SlotConfig(Ids.leftServo, Ids.colorSensorLeft),
             hw,
             telemetry)
 
         rightSlot = Slot(
-            SlotConfig(Ids.servoRight, Ids.colorSensorRight),
+            SlotConfig(Ids.rightServo, Ids.colorSensorRight),
             hw,
             telemetry)
 
@@ -57,6 +57,14 @@ class Indexer(hw: HardwareMap, telemetry: Telemetry) : SubsystemBase() {
             feedCMD(motifPatterns.pattern[0]),
             feedCMD(motifPatterns.pattern[1]),
             feedCMD(motifPatterns.pattern[2]),
+        )
+    }
+
+    fun feedAllShooter(): SequentialCommandGroup {
+        return SequentialCommandGroup(
+            feedCMD(slotList[0]),
+            feedCMD(slotList[1]),
+            feedCMD(slotList[2]),
         )
     }
 
@@ -88,6 +96,14 @@ class Indexer(hw: HardwareMap, telemetry: Telemetry) : SubsystemBase() {
         }
 
         return InstantCommand()
+    }
+
+    private fun feedCMD(slot: Slot): Command {
+            return SequentialCommandGroup(
+                InstantCommand({ slot.feed() }),
+                WaitCommand(1000),
+                InstantCommand({ slot.home() }),
+                WaitCommand(1000))
     }
 
 }

@@ -1,23 +1,20 @@
 package org.firstinspires.ftc.teamcode.subsystems.indexer
 
-import AngularVelocity
-import LinearVelocity
-import kotlin.math.PI
-
 class IndexerConstants {
     object Ids {
-        const val servoFront: String = "frontRightMotor"
-        const val servoRight: String = "frontLeftMotor"
-        const val servoLeft: String = "backRightMotor"
+        const val frontServo: String = "frontServo"
+        const val rightServo: String = "rightServo"
+        const val leftServo: String = "leftServo"
 
-        const val colorSensorFront: String = "frontRightMotor"
-        const val colorSensorRight: String = "frontLeftMotor"
-        const val colorSensorLeft: String = "backRightMotor"
+        const val colorSensorFront: String = "frontSensor"
+        const val colorSensorRight: String = "rightSensor"
+        const val colorSensorLeft: String = "leftSensor"
 
     }
 
     object Positions {
         const val feedPosition: Double = 1.0
         const val homePosition: Double = 0.0
+        const val awakePosition: Double = 0.01
     }
 }

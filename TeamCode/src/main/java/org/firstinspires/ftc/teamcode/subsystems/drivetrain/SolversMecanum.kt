@@ -80,10 +80,10 @@ class SolversMecanum(
     // Setup code //
     private fun motorsConfig() {
         // Configuring motors according to their revolutions per minute
-        frontRightMotor = Motor(hardwareMap, MecanumConstants.Ids.frontRightId, GoBILDA.RPM_312)
-        frontLeftMotor = Motor(hardwareMap, MecanumConstants.Ids.frontLeftId, GoBILDA.RPM_312)
-        backRightMotor = Motor(hardwareMap, MecanumConstants.Ids.backRightId, GoBILDA.RPM_312)
-        backLeftMotor = Motor(hardwareMap, MecanumConstants.Ids.backLeftId, GoBILDA.RPM_312)
+        frontRightMotor = Motor(hardwareMap, MecanumConstants.Ids.frontRightId)
+        frontLeftMotor = Motor(hardwareMap, MecanumConstants.Ids.frontLeftId)
+        backRightMotor = Motor(hardwareMap, MecanumConstants.Ids.backRightId)
+        backLeftMotor = Motor(hardwareMap, MecanumConstants.Ids.backLeftId)
     }
 
     private fun componentConfig() {

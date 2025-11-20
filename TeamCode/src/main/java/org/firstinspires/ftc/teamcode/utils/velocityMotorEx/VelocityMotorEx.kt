@@ -129,6 +129,4 @@ class VelocityMotorEx(
 
     override fun getLinearVelocity(circumference: Distance): LinearVelocity =
         LinearVelocity.fromMps(circumference.meters * (motor.get() / config.ticksPerRevolution * config.gearRatio))
-
-
 }

@@ -16,7 +16,8 @@ val shooterMotorConfig = VelocityMotorConfig(
     ShooterConstants.zeroPowerBehavior,
     ShooterConstants.direction,
     ShooterConstants.ticksPerRevolution,
-    ShooterConstants.pidController
+    ShooterConstants.pidController,
+    ShooterConstants.reduction
 )
 /**
  * This is the code for controlling the shooter wheels on our robot.
@@ -24,24 +25,29 @@ val shooterMotorConfig = VelocityMotorConfig(
  */
 @Suppress("JoinDeclarationAndAssignment")
 class Shooter(hw: HardwareMap, val telemetry: Telemetry): SubsystemBase() {
+
     // This is where the motor intended to control the shooter is declared
     val motor: VelocityMotorEx
+
+    // Initialization //
 
     // This is the code that will execute when the class is initialized
     init {
         // The shooter motor controller is initialized by creating an instance of Motor and passing a velocity motor config
         motor = VelocityMotorEx(Motor(hw, ShooterConstants.shooterMotorId), shooterMotorConfig)
-        // Calls motorConfig()
-        motorConfig()
     }
+
+    // Periodic method //
 
     override fun periodic() {
         telemetry.addData("Shooter velocity in deg/sec", getVelocity())
         telemetry.addData("Position", motor.motor.currentPosition)
         telemetry.addData("rps requested", motor.getVelocity().rps)
         telemetry.addData("rps *  ticks per second", motor.getVelocity().rps * 28)
-
     }
+
+    // Functional code //
+    // Setters //
 
     /**
      * Sets the motor's velocity to a desired angular velocity
@@ -57,12 +63,14 @@ class Shooter(hw: HardwareMap, val telemetry: Telemetry): SubsystemBase() {
         motor.stopMotor()
     }
 
+    // Getters //
+
     /**
      * Checks if the shooter motor is active and running, useful for logic control
      * @return true if the motor is running
      */
     fun isActive(): Boolean {
-        return motor.getVelocity().rotPerSec >= 0.5
+        return motor.getVelocity().rotPerSec >= 0.01
     }
 
     /**
@@ -71,13 +79,5 @@ class Shooter(hw: HardwareMap, val telemetry: Telemetry): SubsystemBase() {
      */
     fun getVelocity(): Double {
         return motor.getVelocity().rotPerSec
-    }
-
-    /**
-     * Useful method giving the motor desired configurations
-     */
-    fun motorConfig() {
-        // Gives the motor an inverted value
-        motor.setInverted(ShooterConstants.isMotorInverted)
     }
 }

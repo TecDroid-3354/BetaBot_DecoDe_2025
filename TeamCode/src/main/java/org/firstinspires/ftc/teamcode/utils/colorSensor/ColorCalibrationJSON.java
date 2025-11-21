@@ -5,6 +5,8 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 
+import org.firstinspires.ftc.teamcode.subsystems.indexer.Indexer;
+import org.firstinspires.ftc.teamcode.subsystems.indexer.IndexerConstants;
 import org.firstinspires.ftc.teamcode.utils.ReadFile;
 import org.json.JSONObject;
 import java.io.File;
@@ -12,14 +14,14 @@ import java.io.FileWriter;
 import org.firstinspires.ftc.teamcode.utils.colorSensor.ColorSensorEx.DetectedColor;
 
 @TeleOp(name = "ColorSensor-calibration", group = "Op Mode")
-@Disabled
+//@Disabled
 public class ColorCalibrationJSON extends LinearOpMode {
 
     ColorSensor colorSensor;
 
     @Override
     public void runOpMode() {
-        colorSensor = hardwareMap.get(ColorSensor.class, "colorSensor");
+        colorSensor = hardwareMap.get(ColorSensor.class, IndexerConstants.Ids.colorSensorFront);
 
         telemetry.addLine("Coloca el sensor frente al color y presiona:");
         telemetry.addLine("A=RED | B=BLUE | X=YELLOW | Y=WHITE");

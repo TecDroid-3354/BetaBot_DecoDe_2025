@@ -16,12 +16,13 @@ import org.firstinspires.ftc.teamcode.utils.colorSensor.ColorSensorEx
 
 data class SlotConfig(
     val servoName: String,
-    val colorSensorName: String
+    val colorSensorName: String,
+    val slotId: String
 )
 
-class Slot (config: SlotConfig, hw: HardwareMap, telemetry: Telemetry) {
+class Slot (val config: SlotConfig, hw: HardwareMap, telemetry: Telemetry) {
     private lateinit var servo: ServoEx
-    private lateinit var colorSensor: ColorSensorEx
+    public lateinit var colorSensor: ColorSensorEx
 
     init {
         servo = ServoEx(hw, config.servoName)
@@ -38,6 +39,8 @@ class Slot (config: SlotConfig, hw: HardwareMap, telemetry: Telemetry) {
     }
 
     fun getDetectedColor(): ColorSensorEx.DetectedColor = colorSensor.getColorFromSensor()
+
+    fun getHSV() = colorSensor.getHSV()
 
     private fun setServoPosition(position: Double) {
         servo.set(position)

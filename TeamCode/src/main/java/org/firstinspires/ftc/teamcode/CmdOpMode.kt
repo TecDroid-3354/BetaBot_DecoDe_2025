@@ -15,6 +15,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit
 import org.firstinspires.ftc.teamcode.commands.JoystickCmd
 import org.firstinspires.ftc.teamcode.subsystems.drivetrain.SolversMecanum
 import org.firstinspires.ftc.teamcode.subsystems.indexer.Indexer
+import org.firstinspires.ftc.teamcode.subsystems.indexer.MotifPatterns
 
 
 // Personally, I chose to run my code using a command-based Op Mode since it works better for me
@@ -69,11 +70,14 @@ class CMDOpMode : CommandOpMode() {
                 mecanum.resetRobotYaw()
             }))
 
-        GamepadButton(controller, GamepadKeys.Button.A)
-            .whenPressed(indexer.feedAllShooter())
+        /*GamepadButton(controller, GamepadKeys.Button.A)
+            .whenPressed(indexer.feedShooter(MotifPatterns.PURPLE_PURPLE_GREEN))*/
     }
 
     fun periodic() {
+        if (controller.gamepad.a) {
+            indexer.feedShooter(MotifPatterns.PURPLE_GREEN_PURPLE).schedule()
+        }
         telemetry.addData("Position:",absoluteEncoder.currentPosition)
 
     }

@@ -39,7 +39,7 @@ class Intake(
 
     // The following method moves the rollers, i.e. "intakes", from a given side
     // It is able to take a custom velocity, or use the default 0.8
-    private fun enableRollers(motor: VelocityMotorEx, velocity: Double = 0.8) {
+    private fun enableRollers(motor: VelocityMotorEx, velocity: Double = IntakeConstants.General.velocity) {
         motor.setVelocity(LinearVelocity.fromMps(velocity))
     }
 
@@ -59,13 +59,22 @@ class Intake(
         rightMotor = VelocityMotorEx(
             hardwareMap.get(Motor::class.java,"rightIntakeMotor"),
             VelocityMotorConfig(
-                pidfCoefficients = PIDFController(0.2, 0.0, 0.0, 0.0))
+                pidfCoefficients = PIDFController(
+                    IntakeConstants.Motor.p,
+                    IntakeConstants.Motor.i,
+                    IntakeConstants.Motor.d,
+                    IntakeConstants.Motor.f))
         )
+
 
         leftMotor = VelocityMotorEx(
             hardwareMap.get(Motor::class.java,"leftIntakeMotor"),
             VelocityMotorConfig(
-                pidfCoefficients = PIDFController(0.2, 0.0, 0.0, 0.0))
+                pidfCoefficients = PIDFController(
+                    IntakeConstants.Motor.p,
+                    IntakeConstants.Motor.i,
+                    IntakeConstants.Motor.d,
+                    IntakeConstants.Motor.f))
         )
     }
 }

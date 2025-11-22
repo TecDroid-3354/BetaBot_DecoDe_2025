@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode
 
+import AngularVelocity
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 import com.seattlesolvers.solverslib.command.CommandOpMode
 import com.seattlesolvers.solverslib.command.CommandScheduler
@@ -23,13 +24,13 @@ import org.firstinspires.ftc.teamcode.subsystems.drivetrain.SolversMecanum
  * To visit the FTC dashboard online (while connected to the Control Hub's internet)
  *    http://192.168.43.1:8080/?page=connection.html&pop=true
  */
-@TeleOp(name = "CMD", group = "Op Mode")
+@TeleOp(name = "CMDniga", group = "Op Mode")
 class CMDOpMode : CommandOpMode() {
 
     /* ! SET UP CODE ! */
 
     // Declaring subsystems
-    lateinit var mecanum: SolversMecanum
+    //lateinit var mecanum: SolversMecanum
 
     // Declaring useful components
     lateinit var controller: GamepadEx
@@ -43,14 +44,14 @@ class CMDOpMode : CommandOpMode() {
         /* Subsystem initialization */
 
         // Initializing the mecanum & its default command
-        mecanum = SolversMecanum(hardwareMap, telemetry)
-        mecanum.defaultCommand = JoystickCmd(
-            { -controller.leftX },
-            { controller.leftY },
-            { -controller.rightX },
-            { mecanum.getRobotYaw(AngleUnit.DEGREES) },
-            mecanum
-        )
+//        mecanum = SolversMecanum(hardwareMap, telemetry)
+//        mecanum.defaultCommand = JoystickCmd(
+//            { -controller.leftX },
+//            { controller.leftY },
+//            { -controller.rightX },
+//            { mecanum.getRobotYaw(AngleUnit.DEGREES) },
+//            mecanum
+//        )
 
         shooter = Shooter(hardwareMap, telemetry)
         // Initializing controller & button bindings
@@ -60,16 +61,16 @@ class CMDOpMode : CommandOpMode() {
 
     // All control bindings that involve command execution are declared here
     fun configureButtonBindings() {
-        GamepadButton(controller, GamepadKeys.Button.START)
-            .whenPressed(InstantCommand({
-                mecanum.resetRobotYaw()
-            }))
+//        GamepadButton(controller, GamepadKeys.Button.START)
+//            .whenPressed(InstantCommand({
+//                mecanum.resetRobotYaw()
+//            }))
 
-        GamepadButton(controller, GamepadKeys.Button.A)
-            .whenPressed(InstantCommand({ shooter.setVelocity(AngularVelocity.fromDegPerSec(90.0)) }))
+        //GamepadButton(controller, GamepadKeys.Button.A)
+          //  .whenPressed(InstantCommand({ shooter.setVelocity(300.0) }))
 
-        GamepadButton(controller, GamepadKeys.Button.B)
-            .whenPressed(InstantCommand({ shooter.stop() }))
+        //GamepadButton(controller, GamepadKeys.Button.B)
+          //  .whenPressed(InstantCommand({ shooter.stop() }))
     }
 
     fun periodic() {
@@ -88,6 +89,10 @@ class CMDOpMode : CommandOpMode() {
         while (!isStopRequested && opModeIsActive()) {
             // Command for actually running the scheduler
 
+
+            if (gamepad1.a) {
+                shooter.setVelocity(AngularVelocity.fromRpm(400.0))
+            }
             CommandScheduler.getInstance().run()
             periodic()
 

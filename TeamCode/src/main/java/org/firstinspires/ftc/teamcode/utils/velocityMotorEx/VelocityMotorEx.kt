@@ -4,6 +4,7 @@ import Angle
 import AngularVelocity
 import Distance
 import LinearVelocity
+import com.qualcomm.robotcore.hardware.DcMotorSimple
 import com.seattlesolvers.solverslib.controller.PIDFController
 import com.seattlesolvers.solverslib.hardware.motors.Motor
 import org.firstinspires.ftc.robotcore.external.Telemetry
@@ -30,7 +31,8 @@ class VelocityMotorEx(
     override fun applyConfig() {
         // Setting up the motor & encoder default behavior
         motor.setZeroPowerBehavior(config.zeroPowerBehavior)
-        motor.encoder.setDirection(config.direction)
+        motor.setRunMode(Motor.RunMode.VelocityControl)
+        motor.motor.direction = config.direction
 
         // Arranging velocity PIDs
         val coefficients = config.pidfCoefficients
@@ -62,7 +64,13 @@ class VelocityMotorEx(
         // 0.035714285714 is the value that you get when dividing 100 percent by the max ticks per second the motor can do,
         // this value is necessary for giving the right velocity to the motor, because the motor.set() method is given in
         // percentage, not in velocity
-        motor.set(angularVelocity.rps * config.ticksPerRevolution * config.gearRatio * 0.035714285714)
+        // For velocity
+        // motor.set(angularVelocity.rps * config.ticksPerRevolution * config.gearRatio)
+
+        // Giving the rpm's in %
+        //motor.set(angularVelocity.rpm / config.revPerMin)
+        motor.set(2.0)
+
     }
 
     override fun setVelocity(linearVelocity: LinearVelocity) {
@@ -119,7 +127,7 @@ class VelocityMotorEx(
 
     // Returns a position in degrees. Takes into consideration reductions + ticksPerRev
     override fun getPosition(): Angle =
-        Angle.fromRotations(motor.currentPosition / config.ticksPerRevolution * config.gearRatio)
+        Angle.fromRotations(motor.currentPosition / config.ticksPerRevolution) // * config.gearRatio)
 
     // Returns the current velocity
     override fun getVelocity(): AngularVelocity = AngularVelocity.fromRps(motor.get() / config.ticksPerRevolution * config.gearRatio)

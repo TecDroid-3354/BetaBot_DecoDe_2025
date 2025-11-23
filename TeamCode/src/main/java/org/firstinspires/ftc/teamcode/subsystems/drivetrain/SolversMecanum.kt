@@ -28,9 +28,9 @@ class SolversMecanum(
     var mecanum: MecanumDrive
 
     // Declaring useful components
-    lateinit var imu: IMU
+    //lateinit var imu: IMU
     lateinit var otos: SparkFunOTOS
-    lateinit var revHubOrientation: RevHubOrientationOnRobot
+    //lateinit var revHubOrientation: RevHubOrientationOnRobot
 
     // Initialization code //
     init {
@@ -47,7 +47,7 @@ class SolversMecanum(
 
     override fun periodic() {
         // Telemetry to retrieve useful data
-        telemetry.addData("RobotYaw", getRobotYaw(AngleUnit.DEGREES))
+        telemetry.addData("RobotYaw", getRobotYaw())
         telemetry.addData("X", otos.position.x)
         telemetry.addData("Y", otos.position.y)
         telemetry.addData("Heading", otos.position.h)
@@ -74,8 +74,10 @@ class SolversMecanum(
             gyroAngleInDegrees)
     }
 
-    fun getRobotYaw(angleUnit: AngleUnit): Double = imu.robotYawPitchRollAngles.getYaw(angleUnit)
-    fun resetRobotYaw(): Unit = imu.resetYaw()
+    fun getRobotYaw(): Double = otos.position.h
+    fun resetOtosYaw(): Unit = otos.resetTracking()
+//    fun getRobotYaw(angleUnit: AngleUnit): Double = imu.robotYawPitchRollAngles.getYaw(angleUnit)
+//    fun resetRobotYaw(): Unit = imu.resetYaw()
 
     // Setup code //
     private fun motorsConfig() {
@@ -89,14 +91,14 @@ class SolversMecanum(
     private fun componentConfig() {
         // REV Hub IMU declaration
         otos = hardwareMap.get(SparkFunOTOS::class.java, "otos")
-        imu = hardwareMap.get(IMU::class.java, "imu")
-        imu.resetYaw()
+        //imu = hardwareMap.get(IMU::class.java, "imu")
+        //imu.resetYaw()
 
-        revHubOrientation = RevHubOrientationOnRobot(
-            RevHubOrientationOnRobot.LogoFacingDirection.RIGHT,
-            RevHubOrientationOnRobot.UsbFacingDirection.FORWARD
-        )
+//        revHubOrientation = RevHubOrientationOnRobot(
+//            RevHubOrientationOnRobot.LogoFacingDirection.RIGHT,
+//            RevHubOrientationOnRobot.UsbFacingDirection.FORWARD
+//        )
 
-        imu.initialize(IMU.Parameters(revHubOrientation))
+        //imu.initialize(IMU.Parameters(revHubOrientation))
     }
 }

@@ -1,9 +1,11 @@
 package org.firstinspires.ftc.teamcode
 
+import com.bylazar.gamepad.Gamepad
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 import com.seattlesolvers.solverslib.command.CommandOpMode
 import com.seattlesolvers.solverslib.command.CommandScheduler
 import com.seattlesolvers.solverslib.command.InstantCommand
+import com.seattlesolvers.solverslib.command.ParallelCommandGroup
 import com.seattlesolvers.solverslib.command.button.GamepadButton
 import com.seattlesolvers.solverslib.gamepad.GamepadEx
 import com.seattlesolvers.solverslib.gamepad.GamepadKeys
@@ -43,10 +45,10 @@ class CMDOpMode : CommandOpMode() {
         // Initializing the mecanum & its default command
         mecanum = SolversMecanum(hardwareMap, telemetry)
         mecanum.defaultCommand = JoystickCmd(
-            { -controller.leftX },
+            { controller.leftX },
             { controller.leftY },
-            { -controller.rightX },
-            { mecanum.getRobotYaw(AngleUnit.DEGREES) },
+            { controller.rightX * 0.8 },
+            { mecanum.getRobotYaw() },
             mecanum
         )
 
@@ -61,22 +63,15 @@ class CMDOpMode : CommandOpMode() {
     fun configureButtonBindings() {
         GamepadButton(controller, GamepadKeys.Button.START)
             .whenPressed(InstantCommand({
-                mecanum.resetRobotYaw()
+                mecanum.resetOtosYaw()
             }))
 
         GamepadButton(controller, GamepadKeys.Button.RIGHT_BUMPER)
-            .whenPressed(InstantCommand({
-                intake.enableIntake(IntakeDirection.RIGHT)
-            })).whenReleased(InstantCommand({
-                intake.stopIntake(IntakeDirection.RIGHT)
-            }))
-
-        GamepadButton(controller, GamepadKeys.Button.LEFT_BUMPER)
-            .whenPressed(InstantCommand({
-                intake.enableIntake(IntakeDirection.LEFT)
-            })).whenReleased(InstantCommand({
-                intake.stopIntake(IntakeDirection.LEFT)
-            }))
+            .whenPressed(
+                intake.enableBothIntakes()
+            ).whenReleased (
+                intake.stopBothIntakes()
+            )
     }
 
     fun periodic() {

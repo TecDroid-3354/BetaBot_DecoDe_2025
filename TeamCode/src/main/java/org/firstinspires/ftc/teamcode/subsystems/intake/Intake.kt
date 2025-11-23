@@ -1,10 +1,14 @@
 package org.firstinspires.ftc.teamcode.subsystems.intake
 
 import LinearVelocity
+import com.qualcomm.robotcore.hardware.DcMotorSimple
 import com.qualcomm.robotcore.hardware.HardwareMap
+import com.seattlesolvers.solverslib.command.InstantCommand
+import com.seattlesolvers.solverslib.command.ParallelCommandGroup
 import com.seattlesolvers.solverslib.command.SubsystemBase
 import com.seattlesolvers.solverslib.controller.PIDFController
 import com.seattlesolvers.solverslib.hardware.motors.Motor
+import com.seattlesolvers.solverslib.hardware.motors.MotorEx
 import org.firstinspires.ftc.robotcore.external.Telemetry
 import org.firstinspires.ftc.teamcode.utils.velocityMotorEx.VelocityMotorConfig
 import org.firstinspires.ftc.teamcode.utils.velocityMotorEx.VelocityMotorEx
@@ -37,10 +41,27 @@ class Intake(
         }
     }
 
+    fun enableBothIntakes(): ParallelCommandGroup {
+        return ParallelCommandGroup(
+            InstantCommand({ enableRollers(rightMotor) }),
+            InstantCommand({ enableRollers(leftMotor) })
+        )
+        //enableRollers(leftMotor)
+        //leftMotor.setVelocity(LinearVelocity.fromMps(0.8))
+    }
+
+    fun stopBothIntakes(): ParallelCommandGroup {
+        return ParallelCommandGroup(
+            InstantCommand({ leftMotor.stopMotor() }),
+            InstantCommand({ rightMotor.stopMotor() })
+        )
+    }
+
     // The following method moves the rollers, i.e. "intakes", from a given side
     // It is able to take a custom velocity, or use the default 0.8
-    private fun enableRollers(motor: VelocityMotorEx, velocity: Double = 0.8) {
-        motor.setVelocity(LinearVelocity.fromMps(velocity))
+    private fun enableRollers(motor: VelocityMotorEx, output: Double = 1.0) {
+        //motor.setVelocity(LinearVelocity.fromMps(velocity))
+        motor.setPower(output)
     }
 
     // Quite literally stops the motors
@@ -57,13 +78,14 @@ class Intake(
     // Configuring motors with the custom VelocityEx class
     private fun motorConfig() {
         rightMotor = VelocityMotorEx(
-            hardwareMap.get(Motor::class.java,"rightIntakeMotor"),
+            Motor(hardwareMap, "rightIntakeMotor", 28.0, 6000.0),
             VelocityMotorConfig(
+                direction = DcMotorSimple.Direction.REVERSE,
                 pidfCoefficients = PIDFController(0.2, 0.0, 0.0, 0.0))
         )
 
         leftMotor = VelocityMotorEx(
-            hardwareMap.get(Motor::class.java,"leftIntakeMotor"),
+            Motor(hardwareMap, "leftIntakeMotor", 28.0, 6000.0),
             VelocityMotorConfig(
                 pidfCoefficients = PIDFController(0.2, 0.0, 0.0, 0.0))
         )
